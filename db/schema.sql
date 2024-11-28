@@ -1,0 +1,65 @@
+CREATE DATABASE IF NOT EXISTS DisneyDB;
+USE DisneyDB;
+
+CREATE TABLE IF NOT EXISTS Shows (
+  showID INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(50) NOT NULL,
+  year INT NOT NULL,
+  date DATE,
+  rating VARCHAR(30),
+  description VARCHAR(500) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Person (
+  personID INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Genre (
+  genreID INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Country (
+  countryID INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(30) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Paper (
+  showID INT NOT NULL,
+  personID INT,
+  paper VARCHAR(10) NOT NULL,
+  PRIMARY KEY (showID, personID),
+  FOREIGN KEY (showID)   REFERENCES Shows(showID),
+  FOREIGN KEY (personID) REFERENCES Person(personID)
+);
+
+CREATE TABLE IF NOT EXISTS Category (
+  categoryID INT AUTO_INCREMENT PRIMARY KEY,
+  type VARCHAR(10)
+);
+
+CREATE TABLE IF NOT EXISTS StreamingOn (
+  showID INT NOT NULL,
+  countryID INT,
+  PRIMARY KEY (showID, countryID),
+  FOREIGN KEY (showID)    REFERENCES Shows(showID),
+  FOREIGN KEY (countryID) REFERENCES Country(countryID)
+);
+
+CREATE TABLE IF NOT EXISTS ListedIn (
+  showID INT NOT NULL,
+  genreID INT NOT NULL,
+  PRIMARY KEY (showID, genreID),
+  FOREIGN KEY (showID)  REFERENCES Shows(showID),
+  FOREIGN KEY (genreID) REFERENCES Genre(genreID)
+);
+
+CREATE TABLE IF NOT EXISTS Duration (
+  showID INT,
+  categoryID INT,
+  time INT,
+  PRIMARY KEY (time, showID, categoryID),
+  FOREIGN KEY (showID)     REFERENCES Shows(showID),
+  FOREIGN KEY (categoryID) REFERENCES Category(categoryID)
+);
