@@ -1,14 +1,14 @@
 DELIMITER //
 
 CREATE PROCEDURE create_show(
-  IN title VARCHAR(50),
-  IN year INT,
+  IN title VARCHAR(100),
+  IN release_year INT,
   IN release_date_date DATE,
   IN rating VARCHAR(30),
   IN show_description VARCHAR(500)
 ) BEGIN  
-  INSERT INTO shows(title, year, release_date, rating, show_description)
-  VALUES (title, year, release_date, rating, show_description);
+  INSERT INTO shows(title, release_year, release_date, rating, show_description)
+  VALUES (title, release_year, release_date, rating, show_description);
 END//
 
 CREATE PROCEDURE create_person(

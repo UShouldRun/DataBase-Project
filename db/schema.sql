@@ -3,8 +3,8 @@ USE DisneyDB;
 
 CREATE TABLE IF NOT EXISTS shows (
   show_id INT AUTO_INCREMENT PRIMARY KEY,
-  title VARCHAR(50) NOT NULL,
-  year INT NOT NULL,
+  title VARCHAR(100) NOT NULL,
+  release_year INT NOT NULL,
   release_date DATE,
   rating VARCHAR(30),
   show_description VARCHAR(500) NOT NULL
