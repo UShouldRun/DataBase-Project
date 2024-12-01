@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-SELECT * FROM shows;
-SELECT * FROM person;
-=======
 DELIMITER //
 
 CREATE PROCEDURE show_genre(IN title VARCHAR(100))
@@ -111,4 +107,3 @@ BEGIN
 END//
 
 DELIMITER ;
->>>>>>> 187ddfe4c40b1d6fafe08d0b0ad8a30cfbf32dd0
