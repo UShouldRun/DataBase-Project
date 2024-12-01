@@ -97,7 +97,7 @@ BEGIN
   GROUP BY Country, Genre
   HAVING COUNT(*) = (
     SELECT MAX(genre_count)
-    FROM genre_show_count()
+    FROM genre_show_count
     NATURAL JOIN listed_in li
     NATURAL JOIN shows s
     NATURAL JOIN streaming_on so
