@@ -4,7 +4,7 @@ USE DisneyDB;
 CREATE TABLE IF NOT EXISTS Shows (
   show_id  INT AUTO_INCREMENT PRIMARY KEY,
   title VARCHAR(100) NOT NULL,
-  year INT NOT NULL,	
+  release_year INT NOT NULL,	
   release_date DATE,
   rating VARCHAR(30),
   show_description VARCHAR(500) NOT NULL
@@ -58,8 +58,8 @@ CREATE TABLE IF NOT EXISTS ListedIn (
 CREATE TABLE IF NOT EXISTS Duration (
   show_id INT,
   category_id INT,
-  duration INT,
-  PRIMARY KEY (duration,show_id, category_id),
+  duration_time INT,
+  PRIMARY KEY (show_id, category_id),
   FOREIGN KEY (show_id)     REFERENCES Shows(show_id),
   FOREIGN KEY (category_id) REFERENCES Category(category_id)
 );
