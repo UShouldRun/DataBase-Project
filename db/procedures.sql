@@ -1,76 +1,94 @@
 DELIMITER //
 
 CREATE PROCEDURE create_show(
-  IN title VARCHAR(50),
-  IN year INT,
-  IN show_date DATE,
-  IN rating VARCHAR(30),
-  IN description VARCHAR(500)
+  IN in_title VARCHAR(50),
+  IN in_year INT,
+  IN in_release_date DATE,
+  IN in_rating VARCHAR(30),
+  IN in_show_description VARCHAR(500),
+  OUT _id INT 
 ) BEGIN  
-  INSERT INTO Shows (title, year, date, rating, description)
-  VALUES (title, year, show_date, rating, description);
+  INSERT INTO Shows (title, year, release_date , rating, show_description) 
+  VALUES (in_title, in_year, in_release_date, in_rating, in_show_description);
+  
+  SET _id = LAST_INSERT_id();
 END//
 
 CREATE PROCEDURE create_person(
-  IN name VARCHAR(100)
+  IN in_person_name VARCHAR(100),
+  OUT _id INT
 ) BEGIN
-  INSERT INTO Person(name)
-  VALUES (name);
+  INSERT INTO Person(person_name)
+  VALUES (in_person_name);
+  
+  SET _id = LAST_INSERT_id();
+
 END//
 
 CREATE PROCEDURE create_genre(
-  IN name VARCHAR(50)
+  IN in_genre_name VARCHAR(50),
+  OUT _id INT
+
 ) BEGIN
-  INSERT INTO Genre (name)
-  VALUES (name);
+  INSERT INTO Genre (genre_name)
+  VALUES (in_genre_name);
+  
+  SET _id = LAST_INSERT_id();
 END//
 
 CREATE PROCEDURE create_country(
-  IN name VARCHAR(30)
+  IN in_country_name VARCHAR(30),
+  OUT _id INT
 ) BEGIN
-  INSERT INTO Country(name)
-  VALUES (name);
+  INSERT INTO Country(country_name)
+  VALUES (in_country_name);
+  
+  SET _id = LAST_INSERT_id();
+
 END//
 
 CREATE PROCEDURE create_category(
-  IN type VARCHAR(10)
+  IN in_category_type VARCHAR(10),
+  OUT _id INT
 ) BEGIN
-  INSERT INTO Category(type)
-  VALUES (type);
+  INSERT INTO Category(category_type)
+  VALUES (in_category_type);
+  
+  SET _id = LAST_INSERT_id();
 END//
 
 CREATE PROCEDURE create_paper(
-  IN showID INT,
-  IN personID INT,
-  IN paper VARCHAR(10)
+  IN in_show_id INT,
+  IN in_person_id INT,
+  IN in_paper_role VARCHAR(10)
 ) BEGIN
-  INSERT INTO Paper(showID, personID, paper)
-  VALUES (showID, personID, paper);
+  INSERT INTO Paper(show_id, person_id, paper_role)
+  VALUES (in_show_id, in_person_id, in_paper_role);
 END//
 
 CREATE PROCEDURE create_listedin(
-  IN showID INT,
-  IN genreID INT
+  IN in_show_id INT,
+  IN in_genre_id INT
 ) BEGIN
-  INSERT INTO ListedIn(showID, genreID)
-  VALUES (showID, genreID);
+  INSERT INTO ListedIn(show_id, genre_id)
+  VALUES (in_show_id, in_genre_id);
 END//
 
 CREATE PROCEDURE create_streaming_on(
-  IN showID INT,
-  IN countryID INT
+  IN in_show_id INT,
+  IN in_country_id INT
 ) BEGIN
-  INSERT INTO StreamingOn(showID, countryID)
-  VALUES (showID, countryID);
+  INSERT INTO StreamingOn(show_id, country_id)
+  VALUES (in_show_id, in_country_id);
 END//
 
 CREATE PROCEDURE create_duration(
-  IN showID INT,
-  IN categoryID INT,
-  IN delta_time INT
+  IN in_show_id INT,
+  IN in_category_id INT,
+  IN in_duration INT
 ) BEGIN
-  INSERT INTO Duration(showID, categoryID, time)
-  VALUES (showID, categoryID, delta_time);
+  INSERT INTO Duration(show_id, category_id, duration)
+  VALUES (in_show_id, in_category_id, in_duration);
 END//
 
 DELIMITER ;
