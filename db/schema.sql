@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS ListedIn (
 CREATE TABLE IF NOT EXISTS Duration (
   show_id INT,
   category_id INT,
-  duration_time INT,
+  duration_time VARCHAR(20),
   PRIMARY KEY (show_id, category_id),
   FOREIGN KEY (show_id)     REFERENCES Shows(show_id),
   FOREIGN KEY (category_id) REFERENCES Category(category_id)
