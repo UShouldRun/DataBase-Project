@@ -1,7 +1,7 @@
 DELIMITER //
 
 CREATE PROCEDURE create_show(
-  IN in_title VARCHAR(50),
+  IN in_title VARCHAR(100),
   IN in_release_year INT,
   IN in_release_date DATE,
   IN in_rating VARCHAR(30),
@@ -85,7 +85,7 @@ END//
 CREATE PROCEDURE create_duration(
   IN in_show_id INT,
   IN in_category_id INT,
-  IN in_duration_time INT
+  IN in_duration_time VARCHAR(20)
 ) BEGIN
   INSERT INTO Duration(show_id, category_id, duration_time)
   VALUES (in_show_id, in_category_id, in_duration_time);
