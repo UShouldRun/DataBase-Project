@@ -116,4 +116,35 @@ BEGIN
   ORDER BY ReleaseYear;
 END//
 
-DELIMITER ;
+CREATE PROCEDURE top_actor_per_genre()
+BEGIN
+  --Ator presente em mais filmes/séries por género 
+  SELECT 
+    g.genre_name AS Genre,
+    p.person_name AS Actor,
+    COUNT(*) AS Appearances
+  FROM show_cast sc
+  NATURAL JOIN shows s 
+  NATURAL JOIN listed_in li 
+  NATURAL JOIN genre g  
+  JOIN paper pp ON sc.actor_id = pp.person_id AND LOWER(pp.paper) = 'actor'
+  NATURAL JOIN person p ON sc.actor_id
+  GROUP BY g.genre_name, p.person_name
+  HAVING COUNT(*) = (
+    SELECT MAX(Appearances)
+    FROM (
+      SELECT 
+        g_inner.genre_name AS Genre,
+        sc_inner.actor_id,
+        COUNT(*) AS Appearances
+      FROM show_cast sc_inner
+      NATURAL JOIN shows s_inner 
+      NATURAL JOIN listed_in li_inner 
+      NATURAL JOIN genre g_inner 
+      GROUP BY g_inner.genre_name, sc_inner.actor_id
+    ) actor_counts
+    WHERE actor_counts.Genre = g.genre_name
+  )
+  ORDER BY Genre, Appearances DESC;
+END //
+DELIMITER//
