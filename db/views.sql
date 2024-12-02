@@ -47,6 +47,29 @@ BEGIN
   ORDER BY s.show_id; 
 END//
 
+CREATE PROCEDURE show_films_by_director(IN director VARCHAR(100))
+BEGIN
+  SELECT p.person_name, s.title
+  FROM show s 
+  NATURAL JOIN paper pa
+  NATURAL JOIN person p
+  WHERE LOWER(pa.paper_role) = 'director' AND LOWER(p.person_name) = LOWER(director)
+  GROUP BY p.person_name
+  ORDER BY s.title
+END//
+
+CREATE PROCEDURE show_films_by_actor(IN actor VARCHAR(100))
+BEGIN
+  SELECT p.person_name, s.title
+  FROM show s 
+  NATURAL JOIN paper pa
+  NATURAL JOIN person p
+  WHERE LOWER(pa.paper_role) = 'actor' AND LOWER(p.person_name) = LOWER(actor)
+  GROUP BY p.person_name
+  ORDER BY s.title
+END//
+
+
 CREATE PROCEDURE show_genre_count()
 BEGIN
   SELECT s.show_id, COUNT(*) AS genre_count
