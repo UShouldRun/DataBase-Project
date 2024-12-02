@@ -58,8 +58,9 @@ END//
 
 CREATE PROCEDURE show_top10_genre(IN category_type VARCHAR(10))
 BEGIN
+  CALL show_genre_count();
   SELECT s.title
-  FROM show_genre_count() sgc
+  FROM  show_genre_count AS sgc
   NATURAL JOIN show s
   NATURAL JOIN duration d
   NATURAL JOIN category c
@@ -104,6 +105,15 @@ BEGIN
     GROUP BY so.country_id, genre_id
   )
   ;
+END//
+
+CREATE PROCEDURE release_trends()
+BEGIN 
+  --Mostrar as tendências de lançamentos de filmes/séries ao longo dos anos
+  SELECT s.release_date AS ReleaseYear, COUNT(*) AS ShowsReleased
+  FROM shows s
+  GROUP BY s.release_date
+  ORDER BY ReleaseYear;
 END//
 
 DELIMITER ;
