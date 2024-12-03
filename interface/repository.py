@@ -1,6 +1,14 @@
 from config import db
 from sqlalchemy import text
 
+def call_show_all_actors() -> list[str]:
+    result = db.session.execute(
+        text("CALL show_actors()")
+    )
+    actors_array = [row['name'] for row in result.fetchall()]
+    return actors_array
+
+
 def call_show_genre(title: string) -> Table:
     return db.session.execute(
         text("""CALL show_genre(:title)"""), { 'title': title }
@@ -12,7 +20,7 @@ def call_show_streaming_countries(title: string) -> Table:
         text("""CALL show_streaming_countries(:title)"""), { 'title': title }
     )
 
-def call_show_directories(title: string) -> Table:
+def call_show_directors(title: string) -> Table:
     return db.session.execute(
         text("""CALL show_directors(:title)"""), { 'title': title }
     )
