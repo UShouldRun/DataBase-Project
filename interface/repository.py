@@ -1,4 +1,5 @@
 from config import db
+from sqlalchemy import text
 
 def call_show_genre(title: string) -> Table:
     return db.session.execute(
@@ -16,10 +17,12 @@ def call_show_directories(title: string) -> Table:
         text("""CALL show_directors(:title)"""), { 'title': title }
     )
 
-def call_show_actors(title: string) -> Table:
-    return db.session.execute(
-        text("""CALL show_genre_count()""")
+def call_show_actors():
+    result = db.session.execute(
+        text("CALL show_actors()")
     )
+    actors_array = [dict(row) for row in result.fetchall()]
+    return actors_array
 
 def call_show_top10_genre(category_type: string) -> Table:
    return db.session.execute(
