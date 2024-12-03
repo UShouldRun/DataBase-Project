@@ -1,6 +1,10 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
+
+from sqlalchemy.engine import Result
+Table = Result
+
 from flask_cors import CORS
 from dotenv import load_dotenv
 import pandas as pd  
@@ -30,6 +34,7 @@ def initialize_database():
             
             db.session.commit()
             print("Database initialized successfully!")
+
         except Exception as e:
             print(f"Error occurred during database initialization: {e}")
 
@@ -42,7 +47,7 @@ def preprocess_dataset(data):
 
             # Fill missing date fields with None (interpreted as NULL in SQL)
             data['date_added'] = data['date_added'].fillna(pd.NaT).replace({pd.NaT: None})
-            # Porque os anos no dataset veem como 2,016 em vez de 2016 tipo wtf stor 
+            # Porque os anos no dataset veem como 2,016 em vez de 2016
             data['release_year'] = data['release_year'].fillna(0).astype(int) *1000
             data['release_year'] = data['release_year'].astype(int)
 
@@ -51,8 +56,6 @@ def preprocess_dataset(data):
         except Exception as e:
             print(f"Error during dataset preprocessing: {e}")
             raise
-
-        
 
 def populate_database():
     with app.app_context():
@@ -73,14 +76,14 @@ def populate_database():
                         'show_description': row['description']
                     }
                 )
-                result= db.session.execute(text("""SELECT @show_id"""))
+                result = db.session.execute(text("""SELECT @show_id"""))
                 show_id = result.fetchone()[0]
                 genres = [genre.strip() for genre in row['listed_in'].split(', ')]
                 for genre in genres:
                     db.session.execute(
                         text("""CALL create_genre(:genre_name, @genre_id)"""), {'genre_name': genre}
                     )
-                    result=db.session.execute(text("""SELECT @genre_id"""))
+                    result = db.session.execute(text("""SELECT @genre_id"""))
                     genre_id = result.fetchone()[0]
                     db.session.execute(
                         text("""CALL create_listed_in(:show_id, :genre_id)"""), {

@@ -130,15 +130,6 @@ BEGIN
   ;
 END//
 
-CREATE PROCEDURE release_trends()
-BEGIN 
-  --Mostrar as tendências de lançamentos de filmes/séries ao longo dos anos
-  SELECT s.release_date AS ReleaseYear, COUNT(*) AS ShowsReleased
-  FROM shows s
-  GROUP BY s.release_date
-  ORDER BY ReleaseYear;
-END//
-
 CREATE PROCEDURE top_actor_per_genre()
 BEGIN
   --Ator presente em mais filmes/séries por género 
@@ -170,4 +161,5 @@ BEGIN
   )
   ORDER BY Genre, Appearances DESC;
 END //
-DELIMITER//
+
+DELIMITER ;

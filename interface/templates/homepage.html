@@ -1,11 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    This is the homepage of the site created by {{author}}
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Welcome to the Homepage</h1>
+<p>Click the button below to see the list of actors:</p>
+<!-- Button that links to the Actors page -->
+<a href="/actors" class="btn">
+    <button type="button">View Actors</button>
+</a>
+<!-- Button that links to the database page -->
+
+<a href="/shows" class="btn">
+    <button type="button">View shows</button>
+</a>
+{% endblock %}
