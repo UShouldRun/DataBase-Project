@@ -1,12 +1,27 @@
 from config import db
 from sqlalchemy import text
 
-def call_show_all_actors() -> list[str]:
+def call_show_all_actors() -> [str]:
     result = db.session.execute(
-        text("CALL show_actors()")
+        text("CALL show_all_actors()")
     )
-    actors_array = [row['name'] for row in result.fetchall()]
+    actors_array = [row['person_name'] for row in result.fetchall()]
     return actors_array
+
+def call_show_all_directors() -> [str]:
+    result = db.session.execute(
+        text("CALL show_all_directors()")
+    )
+    directors_array = [row['person_name'] for row in result.fetchall()]
+    return directors_array
+
+def call_show_all_directors() -> [str]:
+    result = db.session.execute(
+        text("CALL show_all_genres()")
+    )
+    genres_array = [row['genre'] for row in result.fetchall()]
+    return genres_array
+
 
 
 def call_show_genre(title: str) -> Table:
