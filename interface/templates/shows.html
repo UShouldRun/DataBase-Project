@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Shows</h1>
+<table class="styled-table">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Title</th>
+      <th>Director</th>
+      <th>Cast</th>
+      <th>Country</th>
+      <th>Release Year</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for s in shows %}
+    <tr>
+      <td>{{ s.type }}</td>
+      <td>{{ s.title }}</td>
+      <td>{{ s.director | join(', ') }}</td>
+      <td>{{ s.cast | join(', ') }}</td>
+      <td>{{ s.country | join(', ') }}</td>
+      <td>{{ s.release_year[0] }}</td>
+      <td>{{ s.description[0] }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
