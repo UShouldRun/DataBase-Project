@@ -55,11 +55,19 @@ CREATE TABLE IF NOT EXISTS ListedIn (
   FOREIGN KEY (genre_id) REFERENCES Genre(genre_id)
 );
 
+CREATE TABLE IF NOT EXISTS DurationUnit (
+  unit_id  INT AUTO_INCREMENT PRIMARY KEY,
+  unit_name VARCHAR(15) NOT NULL UNIQUE
+); 
+
 CREATE TABLE IF NOT EXISTS Duration (
   show_id INT,
   category_id INT,
-  duration_time VARCHAR(20),
+  duration_time INT,
+  unit_id INT,
   PRIMARY KEY (show_id, category_id),
   FOREIGN KEY (show_id)     REFERENCES Shows(show_id),
-  FOREIGN KEY (category_id) REFERENCES Category(category_id)
+  FOREIGN KEY (category_id) REFERENCES Category(category_id),
+  FOREIGN KEY (unit_id) REFERENCES DurationUnit(unit_id)
 );
+

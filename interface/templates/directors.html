@@ -1,15 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Actors</h1>
+<h1>Directors</h1>
 <table class="styled-table">
   <tr>
     <th><b>Name</b></th>
   </tr>
   
-  {% for actor in actors %}
+  {% for d in directors %}
   <tr>
-    <td><a href="/actors/{{ actor}}" class="no-style-link">{{ actor }}</a></td>
+    <td><a href="/directors/{{ d.DirectorId }}" class="no-style-link">{{ d.Name }}</a></td>
+
   </tr>
   {% endfor %}
   

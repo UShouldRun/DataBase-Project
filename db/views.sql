@@ -1,12 +1,14 @@
+DROP PROCEDURE IF EXISTS show_all_actors;
+
 DELIMITER //
 
 CREATE PROCEDURE show_all_actors()
 BEGIN 
-  SELECT p.name
+  SELECT p.person_name
   FROM person p
-  NATURAL JOIN paper p 
-  WHERE LOWER(p.paper) = 'actor'
-  GROUP BY p.name
+  NATURAL JOIN paper pap
+  WHERE LOWER(pap.paper_role) = 'actor'
+  GROUP BY p.person_name;
 END//
 
 CREATE PROCEDURE show_all_directors()
@@ -15,7 +17,7 @@ BEGIN
   FROM person p
   NATURAL JOIN paper p 
   WHERE LOWER(p.paper) = 'director'
-  GROUP BY p.name
+  GROUP BY p.name;
 END//
 
 CREATE PROCEDURE show_genre(IN title VARCHAR(100))

@@ -48,8 +48,8 @@ def preprocess_dataset(data):
             # Fill missing date fields with None (interpreted as NULL in SQL)
             data['date_added'] = data['date_added'].fillna(pd.NaT).replace({pd.NaT: None})
             # Porque os anos no dataset veem como 2,016 em vez de 2016
-            data['release_year'] = data['release_year'].fillna(0).astype(int) *1000
-            data['release_year'] = data['release_year'].astype(int)
+            data['release_year'] = data['release_year'].fillna(0).astype(int) 
+            
 
             return data
         
@@ -131,13 +131,32 @@ def populate_database():
                         'category_type':row['type']
                     }
                 )
+                duration = row['duration']
+                numeric_part = int(duration.split()[0])  
+                unit_part = duration.split()[1] 
+                result = db.session.execute(
+                    text("SELECT unit_id FROM DurationUnit WHERE unit_name = :unit_name"),
+                    {'unit_name': unit_part}
+                )
+                unit_row = result.fetchone()
+                if unit_row:
+                    unit_id = unit_row[0]
+                else:
+                    db.session.execute(
+                        text("""CALL create_duration_unit(:in_unit_name, @unit_id)"""),
+                        {'in_unit_name': unit_part}
+                    )
+                    result = db.session.execute(text("SELECT @unit_id"))
+                    unit_id = result.fetchone()[0]
+
                 result= db.session.execute(text("""SELECT @category_id"""))
                 category_id = result.fetchone()[0]
                 db.session.execute(
-                    text("""CALL create_duration(:show_id, :category_id, :duration_time)"""),{
+                    text("""CALL create_duration(:show_id, :category_id, :duration_time, :unit_id)"""),{
                         'show_id': show_id,
                         'category_id': category_id,
-                        'duration_time': row['duration']
+                        'duration_time': numeric_part,
+                        'unit_id': unit_id
                         
                     }
                 )

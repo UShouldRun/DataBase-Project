@@ -81,14 +81,24 @@ CREATE PROCEDURE create_streaming_on(
   INSERT INTO StreamingOn(show_id, country_id)
   VALUES (in_show_id, in_country_id);
 END//
+CREATE PROCEDURE create_duration_unit(
+  IN in_unit_name VARCHAR(15),
+  OUT _id INT
+) BEGIN
+  INSERT INTO DurationUnit(unit_name)
+  VALUES (in_unit_name);
+  
+  SET _id = LAST_INSERT_id();
 
+END//
 CREATE PROCEDURE create_duration(
   IN in_show_id INT,
   IN in_category_id INT,
-  IN in_duration_time VARCHAR(20)
+  IN in_duration_time INT,
+  IN in_duration_id INT
 ) BEGIN
-  INSERT INTO Duration(show_id, category_id, duration_time)
-  VALUES (in_show_id, in_category_id, in_duration_time);
+  INSERT INTO Duration(show_id, category_id, duration_time,duration_id)
+  VALUES (in_show_id, in_category_id, in_duration_time, in_duration_id);
 END//
 
 DELIMITER ;

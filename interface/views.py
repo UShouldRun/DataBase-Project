@@ -1,6 +1,6 @@
 from main import app
-from flask import render_template
-
+from flask import render_template, request 
+from repository import  call_show_all_actors
 # routes
 @app.route("/")
 def homepage():
@@ -8,13 +8,33 @@ def homepage():
 
 @app.route("/actors")
 def show_all_actors():
-    actors = [
-        {"ActorId": 1, "Name": "João"},
-        {"ActorId": 2, "Name": "Rossi"},
-        {"ActorId": 3, "Name": "Alex"},
-        {"ActorId": 4, "Name": "Henrique"}
-    ]
+    all_actors = call_show_all_actors()
+
+    cast_filter = request.args.get('cast')
+
+    # Filter actors if a cast filter is provided
+    if cast_filter:
+        cast_list = cast_filter.split(',') 
+        actors = [actor for actor in all_actors if actor["Name"] in cast_list]
+    else:
+        actors = all_actors 
     return render_template("actors.html", actors=actors)
+
+@app.route("/directors")
+def show_all_directors():
+    all_directors = [
+        { "Name": "João"},
+        { "Name": "Henrique"}
+    ]
+    cast_filter = request.args.get('cast')
+
+    # Filter cirectors if a cast filter is provided
+    if cast_filter:
+        cast_list = cast_filter.split(',') 
+        directors = [director for director in all_directors if director["Name"] in cast_list]
+    else:
+        directors = all_directors
+    return render_template("directors.html", directors=directors)
 
 @app.route("/shows")
 def show_all_shows():
@@ -22,7 +42,7 @@ def show_all_shows():
     {
         "type": "Movie",
         "title": "As aventuras da cadeira de base de dados",
-        "director": ["João", "Henrique"],
+        "directors": ["João", "Henrique"],
         "cast": ["João", "Henrique", "Rossi", "Alex"],
         "country": ["Portugal"],
         "release_year": [2024],
@@ -34,7 +54,7 @@ def show_all_shows():
     {
         "type": "Movie",
         "title": "O comuna tirano",
-        "director": ["Rogério"],
+        "directors": ["Rogério"],
         "cast": ["Rogério"],
         "country": ["Portugal"],
         "release_year": [2024],

@@ -1,11 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Welcome to the Homepage</h1>
-<p>Click the button below to see the list of actors:</p>
+<h1 class="welcome_msg">Welcome to the Homepage</h1>
+<p class="welcome_msg">Click on the buttons to view information about the database</p>
+<select>
+    <option >View Actors</option>
+    <option>View Directors</option>
+    <option>View Shows</option>
+
+</select>
 <!-- Button that links to the Actors page -->
 <a href="/actors" class="btn">
     <button type="button">View Actors</button>
+</a>
+<!-- Button that links to the Directors page -->
+<a href="/directors" class="btn">
+    <button type="button">View Directors</button>
 </a>
 <!-- Button that links to the database page -->
 
