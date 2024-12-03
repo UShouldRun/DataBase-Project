@@ -1,8 +1,25 @@
 DELIMITER //
 
+CREATE PROCEDURE show_all_actors()
+BEGIN 
+  SELECT p.name
+  FROM person p
+  NATURAL JOIN paper p 
+  WHERE LOWER(p.paper) = 'actor'
+  GROUP BY p.name
+END//
+
+CREATE PROCEDURE show_all_directors()
+BEGIN 
+  SELECT p.name
+  FROM person p
+  NATURAL JOIN paper p 
+  WHERE LOWER(p.paper) = 'director'
+  GROUP BY p.name
+END//
+
 CREATE PROCEDURE show_genre(IN title VARCHAR(100))
 BEGIN
-  -- Mostrar o género dos filmes
   SELECT s.show_id, s.title, li.genre
   FROM listed_in li
   NATURAL JOIN shows s
@@ -13,7 +30,6 @@ END//
 
 CREATE PROCEDURE show_streaming_countries(IN title VARCHAR(100))
 BEGIN
-  -- Mostrar os países onde o filme está em stream
   SELECT s.show_id, s.title, c.name
   FROM country c 
   NATURAL JOIN streaming_on so
@@ -25,7 +41,6 @@ END//
 
 CREATE PROCEDURE show_directors(IN title VARCHAR(100))
 BEGIN
-  -- Mostrar os diretores do filme
   SELECT s.show_id, s.title, p.name
   FROM person
   NATURAL JOIN paper p
@@ -37,7 +52,6 @@ END//
 
 CREATE PROCEDURE show_actors(IN title VARCHAR(100))
 BEGIN    
-  -- Mostrar os atores do filme
   SELECT s.show_id, s.title, p.name
   FROM person
   NATURAL JOIN paper p
@@ -55,7 +69,7 @@ BEGIN
   NATURAL JOIN person p
   WHERE LOWER(pa.paper_role) = 'director' AND LOWER(p.person_name) = LOWER(director)
   GROUP BY p.person_name
-  ORDER BY s.title
+  ORDER BY s.title;
 END//
 
 CREATE PROCEDURE show_films_by_actor(IN actor VARCHAR(100))
@@ -66,9 +80,8 @@ BEGIN
   NATURAL JOIN person p
   WHERE LOWER(pa.paper_role) = 'actor' AND LOWER(p.person_name) = LOWER(actor)
   GROUP BY p.person_name
-  ORDER BY s.title
+  ORDER BY s.title;
 END//
-
 
 CREATE PROCEDURE show_genre_count()
 BEGIN
@@ -79,16 +92,12 @@ BEGIN
   ORDER BY genre_count DESC;
 END//
 
-CREATE PROCEDURE show_top10_genre(IN category_type VARCHAR(10))
+CREATE PROCEDURE genre_show_count()
 BEGIN
-  CALL show_genre_count();
-  SELECT s.title
-  FROM  show_genre_count AS sgc
-  NATURAL JOIN show s
-  NATURAL JOIN duration d
-  NATURAL JOIN category c
-  WHERE category_type IS NULL OR c.category_type = category_type
-  LIMIT 10;
+  SELECT genre_id, COUNT(*) AS genre_count
+  FROM listed_in
+  GROUP BY genre_id
+  ORDER BY genre_count;
 END//
 
 CREATE PROCEDURE show_yearly_count(IN category_type VARCHAR(10))
@@ -102,12 +111,16 @@ BEGIN
   ORDER BY show_count DESC;
 END//
 
-CREATE PROCEDURE genre_show_count()
+CREATE PROCEDURE show_top10_genre(IN category_type VARCHAR(10))
 BEGIN
-  SELECT genre_id, COUNT(*) AS genre_count
-  FROM listed_in
-  GROUP BY genre_id
-  ORDER BY genre_count;
+  CALL show_genre_count();
+  SELECT s.title
+  FROM show_genre_count AS sgc
+  NATURAL JOIN show s
+  NATURAL JOIN duration d
+  NATURAL JOIN category c
+  WHERE category_type IS NULL OR c.category_type = category_type
+  LIMIT 10;
 END//
 
 CREATE PROCEDURE genre_size_by_country()
@@ -126,13 +139,11 @@ BEGIN
     NATURAL JOIN shows s
     NATURAL JOIN streaming_on so
     GROUP BY so.country_id, genre_id
-  )
-  ;
+  );
 END//
 
 CREATE PROCEDURE top_actor_per_genre()
 BEGIN
-  --Ator presente em mais filmes/séries por género 
   SELECT 
     g.genre_name AS Genre,
     p.person_name AS Actor,
@@ -160,6 +171,6 @@ BEGIN
     WHERE actor_counts.Genre = g.genre_name
   )
   ORDER BY Genre, Appearances DESC;
-END //
+END//
 
 DELIMITER ;
