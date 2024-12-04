@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1 class="welcome_msg">Welcome to the Homepage</h1>
-<p class="welcome_msg">Click on the buttons to view information about the database</p>
 <img src="{{ url_for('static', filename='assets/db.png') }}" alt="Database Image">
+
+<p class="informative_msg">Click on the buttons to view information about the database:</p>
+
 <table class="styled-table">
     <thead>
       <tr>
@@ -33,6 +34,6 @@
 <!-- Button that links to the database page -->
 
 <a href="/shows" class="btn">
-    <button type="button">View shows</button>
+    <button type="button">View dataset</button>
 </a>
 {% endblock %}

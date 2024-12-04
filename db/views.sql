@@ -1,4 +1,5 @@
 DROP PROCEDURE IF EXISTS show_all_actors;
+DROP PROCEDURE IF EXISTS show_all_directors;
 DROP PROCEDURE IF EXISTS show_streaming_countries;
 DROP PROCEDURE IF EXISTS show_genre;
 
@@ -19,7 +20,7 @@ BEGIN
   SELECT p.person_name
   FROM person p
   NATURAL JOIN paper pap
-  WHERE LOWER(pap.paper) = 'director'
+  WHERE LOWER(pap.paper_role) = 'director'
   GROUP BY p.person_name
   ORDER BY TRIM(p.person_name);
 END//

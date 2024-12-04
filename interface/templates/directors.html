@@ -7,10 +7,9 @@
     <th><b>Name</b></th>
   </tr>
   
-  {% for d in directors %}
+  {% for director in directors %}
   <tr>
-    <td><a href="/directors/{{ d.DirectorId }}" class="no-style-link">{{ d.Name }}</a></td>
-
+    <td><a href="/directors/{{ director }}" class="no-style-link">{{ director }}</a></td>
   </tr>
   {% endfor %}
   

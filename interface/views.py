@@ -1,6 +1,6 @@
 from main import app
 from flask import render_template, request 
-from repository import  call_show_all_actors
+from repository import  *
 # routes
 @app.route("/")
 def homepage():
@@ -22,10 +22,8 @@ def show_all_actors():
 
 @app.route("/directors")
 def show_all_directors():
-    all_directors = [
-        { "Name": "João"},
-        { "Name": "Henrique"}
-    ]
+    all_directors = call_show_all_directors()
+
     cast_filter = request.args.get('cast')
 
     # Filter cirectors if a cast filter is provided

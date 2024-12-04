@@ -7,7 +7,12 @@ def call_show_all_actors() -> [str]:
     )
     actors_array = [row['person_name'] for row in result.mappings()]
     return actors_array
-
+def call_show_all_directors() -> [str]:
+    result = db.session.execute(
+        text("CALL show_all_directors()")
+    )
+    directors_array = [row['person_name'] for row in result.mappings()]
+    return directors_array
 '''
 def call_show_genre(title: str) -> Table:
     return db.session.execute(
