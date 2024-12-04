@@ -1,4 +1,6 @@
 DROP PROCEDURE IF EXISTS show_all_actors;
+DROP PROCEDURE IF EXISTS show_streaming_countries;
+DROP PROCEDURE IF EXISTS show_genre;
 
 DELIMITER //
 
@@ -7,9 +9,9 @@ BEGIN
   SELECT p.person_name
   FROM person p
   NATURAL JOIN paper pap 
-  WHERE LOWER(pap.paper) = 'actor'
+  WHERE LOWER(pap.paper_role) = 'actor'
   GROUP BY p.person_name
-  ORDER BY p.person_name;
+  ORDER BY TRIM(p.person_name);
 END//
 
 CREATE PROCEDURE show_all_directors()
@@ -19,7 +21,7 @@ BEGIN
   NATURAL JOIN paper pap
   WHERE LOWER(pap.paper) = 'director'
   GROUP BY p.person_name
-  ORDER BY p.person_name;
+  ORDER BY TRIM(p.person_name);
 END//
 
 CREATE PROCEDURE show_all_genres()
@@ -32,19 +34,19 @@ END//
 
 CREATE PROCEDURE show_genre(IN title VARCHAR(100))
 BEGIN
-  SELECT s.show_id, s.title, li.genre
-  FROM listed_in li
-  NATURAL JOIN shows s
+  SELECT g.genre_name
+  FROM Shows s
+  NATURAL JOIN ListedIn li 
+  NATURAL JOIN Genre g
   WHERE LOWER(s.title) = LOWER(title) 
-  GROUP BY s.show_id
-  ORDER BY s.show_id; 
+  ORDER BY g.genre_name;
 END//
 
 CREATE PROCEDURE show_streaming_countries(IN title VARCHAR(100))
 BEGIN
-  SELECT s.show_id, s.title, c.name
+  SELECT s.show_id, s.title, c.country_name
   FROM country c 
-  NATURAL JOIN streaming_on so
+  NATURAL JOIN streamingOn so
   NATURAL JOIN shows s 
   WHERE LOWER(s.title) = LOWER(title) 
   GROUP BY s.show_id
@@ -76,7 +78,7 @@ END//
 CREATE PROCEDURE show_films_by_director(IN director VARCHAR(100))
 BEGIN
   SELECT p.person_name, s.title
-  FROM show s 
+  FROM shows s 
   NATURAL JOIN paper pap
   NATURAL JOIN person p
   WHERE LOWER(pap.paper_role) = 'director' AND LOWER(p.person_name) = LOWER(director)
@@ -87,7 +89,7 @@ END//
 CREATE PROCEDURE show_films_by_actor(IN actor VARCHAR(100))
 BEGIN
   SELECT p.person_name, s.title
-  FROM show s 
+  FROM shows s 
   NATURAL JOIN paper pap
   NATURAL JOIN person p
   WHERE LOWER(pap.paper_role) = 'actor' AND LOWER(p.person_name) = LOWER(actor)
@@ -128,7 +130,7 @@ BEGIN
   CALL show_genre_count();
   SELECT s.title
   FROM show_genre_count AS sgc
-  NATURAL JOIN show s
+  NATURAL JOIN shows s
   NATURAL JOIN duration d
   NATURAL JOIN category c
   WHERE category_type IS NULL OR c.category_type = category_type

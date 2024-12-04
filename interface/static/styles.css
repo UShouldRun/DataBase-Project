@@ -31,10 +31,15 @@
   font-weight: bold;
 }
 
-.styled-table th,
+.styled-table th {
+  border: 1px solid #dddddd;
+  padding: 12px 15px;
+  text-align: center ;
+}
 .styled-table td {
   border: 1px solid #dddddd;
   padding: 12px 15px;
+  text-align: left;
 }
 
 .styled-table tbody tr {
@@ -56,4 +61,14 @@
 .no-style-link:hover {
   text-decoration: underline; 
   color: darkgray; 
+}
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+.styled-table td.butt {
+  text-align: center;
+  vertical-align: middle; 
 }
