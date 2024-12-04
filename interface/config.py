@@ -157,7 +157,6 @@ def populate_database():
                         'category_id': category_id,
                         'duration_time': numeric_part,
                         'unit_id': unit_id
-                        
                     }
                 )
 
