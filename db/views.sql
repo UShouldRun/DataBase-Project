@@ -6,18 +6,28 @@ CREATE PROCEDURE show_all_actors()
 BEGIN 
   SELECT p.person_name
   FROM person p
-  NATURAL JOIN paper pap
-  WHERE LOWER(pap.paper_role) = 'actor'
-  GROUP BY p.person_name;
+  NATURAL JOIN paper pap 
+  WHERE LOWER(pap.paper) = 'actor'
+  GROUP BY p.person_name
+  ORDER BY p.person_name;
 END//
 
 CREATE PROCEDURE show_all_directors()
 BEGIN 
-  SELECT p.name
+  SELECT p.person_name
   FROM person p
-  NATURAL JOIN paper p 
-  WHERE LOWER(p.paper) = 'director'
-  GROUP BY p.name;
+  NATURAL JOIN paper pap
+  WHERE LOWER(pap.paper) = 'director'
+  GROUP BY p.person_name
+  ORDER BY p.person_name;
+END//
+
+CREATE PROCEDURE show_all_genres()
+BEGIN
+  SELECT li.genre 
+  FROM listed_in li
+  GROUP BY li.genre
+  ORDER BY li.genre;
 END//
 
 CREATE PROCEDURE show_genre(IN title VARCHAR(100))
@@ -43,22 +53,22 @@ END//
 
 CREATE PROCEDURE show_directors(IN title VARCHAR(100))
 BEGIN
-  SELECT s.show_id, s.title, p.name
-  FROM person
-  NATURAL JOIN paper p
+  SELECT s.show_id, s.title, p.person_name
+  FROM person p
+  NATURAL JOIN paper pap
   NATURAL JOIN shows s
-  WHERE LOWER(s.title) = LOWER(title) AND LOWER(p.paper) = 'director' 
+  WHERE LOWER(s.title) = LOWER(title) AND LOWER(pap.paper) = 'director' 
   GROUP BY s.show_id
   ORDER BY s.show_id;
 END//
 
 CREATE PROCEDURE show_actors(IN title VARCHAR(100))
 BEGIN    
-  SELECT s.show_id, s.title, p.name
-  FROM person
-  NATURAL JOIN paper p
+  SELECT s.show_id, s.title, p.person_name
+  FROM person p
+  NATURAL JOIN paper pap
   NATURAL JOIN shows s
-  WHERE LOWER(s.title) = LOWER(title) AND LOWER(p.paper) = 'actor' 
+  WHERE LOWER(s.title) = LOWER(title) AND LOWER(pap.paper) = 'actor' 
   GROUP BY s.show_id
   ORDER BY s.show_id; 
 END//
@@ -67,9 +77,9 @@ CREATE PROCEDURE show_films_by_director(IN director VARCHAR(100))
 BEGIN
   SELECT p.person_name, s.title
   FROM show s 
-  NATURAL JOIN paper pa
+  NATURAL JOIN paper pap
   NATURAL JOIN person p
-  WHERE LOWER(pa.paper_role) = 'director' AND LOWER(p.person_name) = LOWER(director)
+  WHERE LOWER(pap.paper_role) = 'director' AND LOWER(p.person_name) = LOWER(director)
   GROUP BY p.person_name
   ORDER BY s.title;
 END//
@@ -78,9 +88,9 @@ CREATE PROCEDURE show_films_by_actor(IN actor VARCHAR(100))
 BEGIN
   SELECT p.person_name, s.title
   FROM show s 
-  NATURAL JOIN paper pa
+  NATURAL JOIN paper pap
   NATURAL JOIN person p
-  WHERE LOWER(pa.paper_role) = 'actor' AND LOWER(p.person_name) = LOWER(actor)
+  WHERE LOWER(pap.paper_role) = 'actor' AND LOWER(p.person_name) = LOWER(actor)
   GROUP BY p.person_name
   ORDER BY s.title;
 END//
@@ -155,7 +165,7 @@ BEGIN
   NATURAL JOIN listed_in li 
   NATURAL JOIN genre g  
   JOIN paper pp ON sc.actor_id = pp.person_id AND LOWER(pp.paper) = 'actor'
-  NATURAL JOIN person p ON sc.actor_id
+  NATURAL JOIN person p
   GROUP BY g.genre_name, p.person_name
   HAVING COUNT(*) = (
     SELECT MAX(Appearances)
