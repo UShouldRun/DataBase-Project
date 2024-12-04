@@ -1,7 +1,7 @@
 from config import db, Table
 from sqlalchemy import text
 
-def call_show_all_actors() -> list[str]:
+def call_show_all_actors() -> [str]:
     result = db.session.execute(
         text("CALL show_all_actors()")
     )
