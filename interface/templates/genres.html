@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Actors</h1>
+<table class="styled-table">
+  <tr>
+    <th><b>Name</b></th>
+  </tr>
+  {% if genres %}
+    {% for genre in genres %}
+    <tr>
+        <td>{{ genre }}</td>
+    </tr>
+    {% endfor %}
+  {% else %}
+  <p>No genres found.</p>
+  {% endif %}
+  
+</table>
+{% endblock %}

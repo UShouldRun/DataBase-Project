@@ -4,7 +4,6 @@ DROP PROCEDURE IF EXISTS show_all_actors;
 DROP PROCEDURE IF EXISTS show_all_directors;
 DROP PROCEDURE IF EXISTS show_all_genres;
 DROP PROCEDURE IF EXISTS show_streaming_countries;
-DROP PROCEDURE IF EXISTS show_genres;
 DROP PROCEDURE IF EXISTS show_genre;
 DROP PROCEDURE IF EXISTS show_streaming_countries;
 DROP PROCEDURE IF EXISTS show_directors;
@@ -45,13 +44,12 @@ END//
 
 CREATE PROCEDURE show_genre(IN title VARCHAR(100))
 BEGIN
-  SELECT Shows.show_id, Shows.title, Genre.genre_name
-  FROM Shows
-  NATURAL JOIN ListedIn
-  NATURAL JOIN Genre
-  GROUP BY Shows.show_id
-  HAVING LOWER(Shows.title) = LOWER(title) 
-  ORDER BY Shows.show_id; 
+  SELECT g.genre_name AS genres
+  FROM Shows s
+  NATURAL JOIN ListedIn li 
+  NATURAL JOIN Genre g
+  WHERE LOWER(s.title) = LOWER(title) 
+  ORDER BY g.genre_name;
 END//
 
 CREATE PROCEDURE show_streaming_countries(IN title VARCHAR(100))

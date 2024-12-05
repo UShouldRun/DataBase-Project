@@ -5,21 +5,31 @@ def call_show_all_actors() -> [str]:
     result = db.session.execute(
         text("CALL show_all_actors()")
     )
-    actors_array = [row['person_name'] for row in result.mappings()]
+    actors_array = [row['actors'] for row in result.mappings()]
     return actors_array
 def call_show_all_directors() -> [str]:
     result = db.session.execute(
         text("CALL show_all_directors()")
     )
-    directors_array = [row['person_name'] for row in result.mappings()]
+    directors_array = [row['directors'] for row in result.mappings()]
     return directors_array
-'''
-def call_show_genre(title: str) -> Table:
-    return db.session.execute(
-        text("""CALL show_genre(:title)"""), { 'title': title }
-    )
-    return table
 
+
+def call_show_genre(title: str) -> list[str]:
+    result = db.session.execute(
+        text("CALL show_genre(:title)"), {"title": title}
+    )
+    genre_array = [row["genres"] for row in result.mappings()]
+    return genre_array
+
+
+def call_show_all_genres() -> list[str]:
+    result = db.session.execute(
+        text("CALL show_all_genres()")
+    )
+    genre_array = [row["genres"] for row in result.mappings()]
+    return genre_array
+'''
 def call_show_streaming_countries(title: str) -> Table:
     return db.session.execute(
         text("""CALL show_streaming_countries(:title)"""), { 'title': title }

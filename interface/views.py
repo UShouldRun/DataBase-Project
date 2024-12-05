@@ -63,3 +63,14 @@ def show_all_shows():
     }
     ]
     return render_template("shows.html", shows=shows)
+
+@app.route("/genres", methods=["GET"])
+def show_all_genres():
+    title = request.args.get("title")
+
+    if title:
+        genres = call_show_genre(title.strip())
+    else:
+        genres = call_show_all_genres()
+
+    return render_template("genres.html", genres=genres)
