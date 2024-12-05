@@ -1,19 +1,19 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Genres</h1>
+<h1>Countries</h1>
 <table class="styled-table">
   <tr>
     <th><b>Name</b></th>
   </tr>
-  {% if genres %}
-    {% for genre in genres %}
+  {% if countries %}
+    {% for country in countries %}
     <tr>
-        <td>{{ genre }}</td>
+        <td>{{ country }}</td>
     </tr>
     {% endfor %}
   {% else %}
-  <p>No genres found.</p>
+  <p>No countries found.</p>
   {% endif %}
   
 </table>

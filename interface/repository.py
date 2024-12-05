@@ -29,14 +29,21 @@ def call_show_all_genres() -> [str]:
     genre_array = [row["genres"] for row in result.mappings()]
     return genre_array
 
-'''CONFIRMEM A PARTIR DAQUI'''
 
-def call_show_streaming_countries(title: str) -> [str]:
+
+def call_show_countries(title: str) -> [str]:
     result = db.session.execute(
-        text("""CALL show_streaming_countries(:title)"""), {'title': title}
+        text("""CALL show_countries(:title)"""), {'title': title}
     )
-    return [row["country_name"] for row in result.fetchall()]
+    return [row["countries"] for row in result.mappings()]
 
+def call_show_all_countries() -> [str]:
+    result = db.session.execute(
+        text("""CALL show_all_countries()""")
+    )
+    return [row["countries"] for row in result.mappings()]
+
+'''CONFIRMEM A PARTIR DAQUI'''
 def call_show_directors(title: str) -> list[str]:
     result = db.session.execute(
         text("""CALL show_directors(:title)"""), {'title': title}

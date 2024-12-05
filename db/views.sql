@@ -3,7 +3,8 @@ USE DisneyDB;
 DROP PROCEDURE IF EXISTS show_all_actors;
 DROP PROCEDURE IF EXISTS show_all_directors;
 DROP PROCEDURE IF EXISTS show_all_genres;
-DROP PROCEDURE IF EXISTS show_streaming_countries;
+DROP PROCEDURE IF EXISTS show_countries;
+DROP PROCEDURE IF EXISTS show_all_countries;
 DROP PROCEDURE IF EXISTS show_genre;
 DROP PROCEDURE IF EXISTS show_streaming_countries;
 DROP PROCEDURE IF EXISTS show_directors;
@@ -43,7 +44,7 @@ BEGIN
 END//
 
 CREATE PROCEDURE show_genre(IN title VARCHAR(100))
-BEGIN
+BEGIN	
   SELECT g.genre_name AS genres
   FROM Shows s
   NATURAL JOIN ListedIn li 
@@ -52,15 +53,20 @@ BEGIN
   ORDER BY g.genre_name;
 END//
 
-CREATE PROCEDURE show_streaming_countries(IN title VARCHAR(100))
+CREATE PROCEDURE show_countries(IN in_title VARCHAR(100))
 BEGIN
-  SELECT Shows.show_id, Shows.title, Country.country_name
-  FROM Country 
-  NATURAL JOIN StreamingOn
-  NATURAL JOIN Shows
-  GROUP BY StreamingOn.show_id, StreamingOn.country_id
-  HAVING LOWER(Shows.title) = LOWER(title) 
-  ORDER BY Shows.show_id;
+	SELECT Country.country_name AS countries
+	FROM Country
+	NATURAL JOIN StreamingOn
+	NATURAL JOIN Shows
+	WHERE LOWER(Shows.title) = LOWER(in_title);
+END//
+
+CREATE PROCEDURE show_all_countries()
+BEGIN
+  SELECT DISTINCT country_name AS countries
+  FROM Country
+  ORDER BY country_name;
 END//
 
 CREATE PROCEDURE show_directors(IN title VARCHAR(100))
