@@ -58,14 +58,8 @@ def call_show_top10_genre(category_type: str) -> [str]:
     return [row["title"] for row in result.fetchall()]
 
 
-'''
-def call_genre_show_count() -> Table:
-    return db.session.execute(
-        text("""CALL genre_size_by_country()""")
-    )
-
-def call_top_actor_by_genre() -> Table:
-    return db.session.execute(
+def call_top_actor_by_genre() -> list[dict]:
+    result = db.session.execute(
         text("""CALL top_actor_by_genre()""")
     )
-'''
+    return [dict(row) for row in result.fetchall()]
