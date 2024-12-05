@@ -7,6 +7,7 @@ def call_show_all_actors() -> [str]:
     )
     actors_array = [row['actors'] for row in result.mappings()]
     return actors_array
+
 def call_show_all_directors() -> [str]:
     result = db.session.execute(
         text("CALL show_all_directors()")
@@ -14,44 +15,50 @@ def call_show_all_directors() -> [str]:
     directors_array = [row['directors'] for row in result.mappings()]
     return directors_array
 
-
-def call_show_genre(title: str) -> list[str]:
+def call_show_genre(title: str) -> [str]:
     result = db.session.execute(
         text("CALL show_genre(:title)"), {"title": title}
     )
     genre_array = [row["genres"] for row in result.mappings()]
     return genre_array
 
-
-def call_show_all_genres() -> list[str]:
+def call_show_all_genres() -> [str]:
     result = db.session.execute(
         text("CALL show_all_genres()")
     )
     genre_array = [row["genres"] for row in result.mappings()]
     return genre_array
-'''
-def call_show_streaming_countries(title: str) -> Table:
-    return db.session.execute(
-        text("""CALL show_streaming_countries(:title)"""), { 'title': title }
-    )
 
-def call_show_directors(title: str) -> Table:
-    return db.session.execute(
-        text("""CALL show_directors(:title)"""), { 'title': title }
-    )
+'''CONFIRMEM A PARTIR DAQUI'''
 
-def call_show_actors():
+def call_show_streaming_countries(title: str) -> [str]:
     result = db.session.execute(
-        text("CALL show_actors()")
+        text("""CALL show_streaming_countries(:title)"""), {'title': title}
     )
-    actors_array = [dict(row) for row in result.fetchall()]
-    return actors_array
+    return [row["country_name"] for row in result.fetchall()]
 
-def call_show_top10_genre(category_type: str) -> Table:
-   return db.session.execute(
-        text("""CALL show_yearly_count(:category_type)"""), { 'category_type': category_type }
-    ) 
+def call_show_directors(title: str) -> list[str]:
+    result = db.session.execute(
+        text("""CALL show_directors(:title)"""), {'title': title}
+    )
+    return [row["person_name"] for row in result.fetchall()]
 
+
+def call_show_actors(title: str) -> [str]:
+    result = db.session.execute(
+        text("""CALL show_directors(:title)"""), {'title': title}
+    )
+    return [row["person_name"] for row in result.fetchall()]
+
+
+def call_show_top10_genre(category_type: str) -> [str]:
+    result = db.session.execute(
+        text("""CALL show_directors(:category_type)"""), {'category_type': category_type}
+    )
+    return [row["title"] for row in result.fetchall()]
+
+
+'''
 def call_genre_show_count() -> Table:
     return db.session.execute(
         text("""CALL genre_size_by_country()""")
