@@ -6,32 +6,24 @@ from repository import  *
 def homepage():
     return render_template("homepage.html")
 
-@app.route("/actors")
+@app.route("/actors",methods=["GET"])
 def show_all_actors():
-    all_actors = call_show_all_actors()
-
-    cast_filter = request.args.get('cast')
-
-    # Filter actors if a cast filter is provided
-    if cast_filter:
-        cast_list = cast_filter.split(',') 
-        actors = [actor for actor in all_actors if actor["Name"] in cast_list]
+    title = request.args.get("title")
+    if title:
+        actors=call_show_actors(title.strip())
     else:
-        actors = all_actors 
+        actors=call_show_all_actors()
+    
     return render_template("actors.html", actors=actors)
 
 @app.route("/directors")
 def show_all_directors():
-    all_directors = call_show_all_directors()
-
-    cast_filter = request.args.get('cast')
-
-    # Filter cirectors if a cast filter is provided
-    if cast_filter:
-        cast_list = cast_filter.split(',') 
-        directors = [director for director in all_directors if director["Name"] in cast_list]
+    title = request.args.get("title")
+    if title:
+        directors=call_show_directors(title.strip())
     else:
-        directors = all_directors
+        directors=call_show_all_directors()
+    
     return render_template("directors.html", directors=directors)
 
 @app.route("/shows")
