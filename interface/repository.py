@@ -43,21 +43,21 @@ def call_show_all_countries() -> [str]:
     )
     return [row["countries"] for row in result.mappings()]
 
-'''CONFIRMEM A PARTIR DAQUI'''
+
 def call_show_directors(title: str) -> list[str]:
     result = db.session.execute(
         text("""CALL show_directors(:title)"""), {'title': title}
     )
-    return [row["person_name"] for row in result.fetchall()]
+    return [row["directors"] for row in result.mappings()]
 
 
 def call_show_actors(title: str) -> [str]:
     result = db.session.execute(
-        text("""CALL show_directors(:title)"""), {'title': title}
+        text("""CALL show_actors(:title)"""), {'title': title}
     )
-    return [row["person_name"] for row in result.fetchall()]
+    return [row["actors"] for row in result.mappings()]
 
-
+'''CONFIRMEM A PARTIR DAQUI'''
 def call_show_top10_genre(category_type: str) -> [str]:
     result = db.session.execute(
         text("""CALL show_directors(:category_type)"""), {'category_type': category_type}

@@ -16,17 +16,19 @@
         <tr>
             <td>Seleciona o nome de todos os atores</td>
             <td class="butt">
-                <a href="/actors" class="btn">
-                    <button type="button">View Actors</button>
-                </a> 
+                <form action="/actors" method="get" class="genre-form">
+                    <input type="text" name="title" placeholder="Enter a show title" />
+                    <a class="btn"><button type="submit">View Actors</button></a>
+                </form>
             </td>
         </tr>
         <tr>
             <td>Seleciona o nome de todos os diretores</td>
             <td class="butt">
-                <a href="/directors" class="btn">
-                    <button type="button">View Directors</button>
-                </a> 
+                <form action="/directors" method="get" class="genre-form">
+                    <input type="text" name="title" placeholder="Enter a show title" />
+                    <a class="btn"><button type="submit">View Directors</button></a>
+                </form>
             </td>
         </tr>
         <tr>

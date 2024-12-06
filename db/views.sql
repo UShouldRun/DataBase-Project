@@ -71,7 +71,7 @@ END//
 
 CREATE PROCEDURE show_directors(IN title VARCHAR(100))
 BEGIN
-  SELECT Person.person_name
+  SELECT Person.person_name AS directors
   FROM Person
   NATURAL JOIN Paper
   NATURAL JOIN Shows
@@ -82,7 +82,7 @@ END//
 
 CREATE PROCEDURE show_actors(IN title VARCHAR(100))
 BEGIN    
-  SELECT Person.person_name
+  SELECT Person.person_name AS actors
   FROM Person
   NATURAL JOIN Paper
   NATURAL JOIN Shows

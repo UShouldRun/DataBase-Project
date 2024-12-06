@@ -23,10 +23,10 @@
       <td>{{ s.type }}</td>
       <td>{{ s.title }}</td>
       <td>
-        <a href="/directors?cast={{ s.directors | join(',') }}" class="no-style-link">{{ s.directors | join(', ') }}</a>
+        <a href="/directors?title={{ s.title }}" class="no-style-link">{{ s.directors | join(', ') }}</a>
       </td>
       <td>
-        <a href="/actors?cast={{ s.cast | join(',') }}" class="no-style-link">{{ s.cast | join(', ') }}</a>
+        <a href="/actors?title={{ s.title }}" class="no-style-link">{{ s.cast | join(', ') }}</a>
       </td>
       <td>{{ s.country | join(', ') }}</td>
       <td>{{ s.release_year[0] }}</td>
