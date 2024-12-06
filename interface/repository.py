@@ -22,6 +22,22 @@ def call_show_all_genres() -> [str]:
     genre_array = [row["genres"] for row in result.mappings()]
     return genre_array
 
+'''A PARTIR DAQUI    '''
+def call_show_all_shows_by_country() -> list[dict]:
+    result = db.session.execute(
+        text("CALL show_all_shows_by_country()")
+    )
+    movies_array = [{"country": row["country"], "movies": row["movies"]} for row in result.mappings()]
+    return movies_array
+
+def call_show_all_shows_by_genre() -> list[dict]:
+    result = db.session.execute(
+        text("CALL show_all_shows_by_genre()")
+    )
+    movies_array = [{"genre": row["genre"], "movies": row["movies"]} for row in result.mappings()]
+    return movies_array
+'''---------------------------'''
+
 def call_top_actor_by_genre() -> list[dict]:
     result = db.session.execute(
         text("""CALL top_actor_by_genre()""")
