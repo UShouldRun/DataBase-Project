@@ -14,14 +14,12 @@ def call_show_all_directors() -> [str]:
     )
     directors_array = [row['directors'] for row in result.mappings()]
     return directors_array
-
 def call_show_genre(title: str) -> [str]:
     result = db.session.execute(
         text("CALL show_genre(:title)"), {"title": title}
     )
     genre_array = [row["genres"] for row in result.mappings()]
     return genre_array
-
 def call_show_all_genres() -> [str]:
     result = db.session.execute(
         text("CALL show_all_genres()")
@@ -29,11 +27,9 @@ def call_show_all_genres() -> [str]:
     genre_array = [row["genres"] for row in result.mappings()]
     return genre_array
 
-
-
-def call_show_countries(title: str) -> [str]:
+def call_top_actor_by_genre() -> list[dict]:
     result = db.session.execute(
-        text("""CALL show_countries(:title)"""), {'title': title}
+        text("""CALL top_actor_by_genre()""")
     )
     return [row["countries"] for row in result.mappings()]
 
@@ -43,6 +39,11 @@ def call_show_all_countries() -> [str]:
     )
     return [row["countries"] for row in result.mappings()]
 
+def call_show_countries(title: str) -> [str]:
+    result = db.session.execute(
+        text("""CALL show_countries(:title)"""), {'title': title}
+    )
+    return [row["countries"] for row in result.mappings()]
 
 def call_show_directors(title: str) -> list[str]:
     result = db.session.execute(
@@ -62,9 +63,8 @@ def call_show_top10_genre(category_type: str) -> [str]:
     result = db.session.execute(
         text("""CALL show_directors(:category_type)"""), {'category_type': category_type}
     )
-    return [row["title"] for row in result.fetchall()]
-
-
+    return [row["title"] for row in result.mappings()]
+'''probably delete this'''
 def call_top_actor_by_genre() -> list[dict]:
     result = db.session.execute(
         text("""CALL top_actor_by_genre()""")
