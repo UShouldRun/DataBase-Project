@@ -47,7 +47,28 @@ BEGIN
   ORDER BY genre_name;
 END//
 
--- ADICIONEI AS DUAS SEGUINTES
+CREATE PROCEDURE show_all_movies()
+BEGIN
+  SELECT DISTINCT
+    shows.title AS title
+  FROM shows
+  NATURAL JOIN duration
+  NATURAL JOIN category
+  WHERE LOWER(category.category_type) = 'tv show'
+  ORDER BY shows.title;
+END//
+
+CREATE PROCEDURE show_all_series()
+BEGIN
+  SELECT DISTINCT
+    shows.title AS title
+  FROM shows
+  NATURAL JOIN duration
+  NATURAL JOIN category
+  WHERE LOWER(category.category_type) = 'tv show'
+  ORDER BY shows.title;
+END//
+
 CREATE PROCEDURE show_all_shows_by_genre()
 BEGIN
   SELECT 
@@ -219,6 +240,21 @@ BEGIN
   NATURAL JOIN Category
   WHERE category_type IS NULL OR Category.category_type = category_type
   LIMIT 10;
+END//
+
+--OPERAÇÕES PARA UMA DETERMINADA DURAÇÃO
+
+CREATE PROCEDURE show_within_restrictions(IN category_type, IN duration_time INT)
+BEGIN
+  SELECT DISTINCT
+    shows.title AS title,
+    duration.duration_time AS duration 
+  FROM shows
+  NATURAL JOIN duration
+  NATURAL JOIN durationunit
+  NATURAL JOIN category
+  WHERE duration.duration_time <= duration_time AND category.category_type = category_type
+  ORDER BY duration.duration_time;
 END//
 
 -- VIEWS

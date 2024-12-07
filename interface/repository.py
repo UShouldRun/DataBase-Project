@@ -20,6 +20,7 @@ def call_show_genre(title: str) -> [str]:
     )
     genre_array = [row["genres"] for row in result.mappings()]
     return genre_array
+
 def call_show_all_genres() -> [str]:
     result = db.session.execute(
         text("CALL show_all_genres()")
