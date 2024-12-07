@@ -1,102 +1,109 @@
 from config import db, Table
 from sqlalchemy import text
 
-def call_show_all_actors() -> [str]:
-    result = db.session.execute(
-        text("CALL show_all_actors()")
+def call_actors_all() -> list[str]:
+    result: Table = db.session.execute(
+        text("CALL actors_all()")
     )
-    actors_array = [row['actors'] for row in result.mappings()]
-    return actors_array
+    return [row['actors'] for row in result.mappings()]
 
-def call_show_all_directors() -> [str]:
-    result = db.session.execute(
-        text("CALL show_all_directors()")
+def call_actors(title: str) -> list[str]:
+    result: Table = db.session.execute(
+        text("""CALL actors(:title)"""),
+        { 'title': title }
     )
-    directors_array = [row['directors'] for row in result.mappings()]
-    return directors_array
-def call_show_genre(title: str) -> [str]:
-    result = db.session.execute(
-        text("CALL show_genre(:title)"), {"title": title}
-    )
-    genre_array = [row["genres"] for row in result.mappings()]
-    return genre_array
+    return [row["actors"] for row in result.mappings()]
 
-def call_show_all_genres() -> [str]:
-    result = db.session.execute(
-        text("CALL show_all_genres()")
+def call_directors_all() -> list[str]:
+    result: Table = db.session.execute(
+        text("CALL directors_all()")
     )
-    genre_array = [row["genres"] for row in result.mappings()]
-    return genre_array
+    return [row['directors'] for row in result.mappings()]
 
-def call_show_all_titles() -> [dict]:
-    result = db.session.execute(
-        text("""SELECT s.title AS title, d.duration_time AS duration,du.unit_name as unit, s.show_description AS description
-                FROM Shows s
-                NATURAL JOIN Duration d
-                NATURAL JOIN DurationUnit du
-                ORDER BY title, d.duration_time""")
+def call_directors(title: str) -> list[str]:
+    result: Table = db.session.execute(
+        text("""CALL directors(:title)"""),
+        { 'title': title }
     )
-    return [{
-        "title": row["title"],
-        "duration": f"{row['duration']} {row['unit']}", 
-        "description": row["description"]
-    } for row in result.mappings()]
+    return [row["directors"] for row in result.mappings()]
 
-def call_show_all_shows_by_country() -> list[dict]:
-    result = db.session.execute(
-        text("CALL show_all_shows_by_country()")
+def call_genres_all() -> list[str]:
+    result: Table = db.session.execute(
+        text("CALL genres_all()")
     )
-    movies_array = [{"country": row["country"], "movies": row["movies"]} for row in result.mappings()]
-    return movies_array
+    return [row["genres"] for row in result.mappings()]
 
-def call_show_all_shows_by_genre() -> list[dict]:
-    result = db.session.execute(
-        text("CALL show_all_shows_by_genre()")
+def call_genres(title: str) -> list[str]:
+    result: Table = db.session.execute(
+        text("CALL genres(:title)"),
+        { "title": title }
     )
-    movies_array = [{"genre": row["genres"], "movies": row["movies"]} for row in result.mappings()]
-    return movies_array
+    return [row["genres"] for row in result.mappings()]
 
+def call_countries_all() -> list[str]:
+    result: Table = db.session.execute(
+        text("""CALL countries_all()""")
+    )
+    return [row["countries"] for row in result.mappings()]
+
+def call_countries(title: str) -> list[str]:
+    result: Table = db.session.execute(
+        text("""CALL countries(:title)"""),
+        { 'title': title }
+    )
+    return [row["countries"] for row in result.mappings()]
+
+def call_titles_all() -> list[dict]:
+    result = db.session.execute(
+        text(
+            """
+            SELECT DISTINCT
+                Shows.title AS title,
+                Duration.duration_time AS duration,
+                DurationUnit.unit_name as unit,
+                Shows.show_description AS description
+            FROM Shows
+            NATURAL JOIN Duration
+            NATURAL JOIN DurationUnit
+            ORDER BY title, duration
+            """
+        )
+    )
+    return [
+        {
+            "title":       row["title"],
+            "duration": f"{row['duration']} {row['unit']}", 
+            "description": row["description"]
+        } for row in result.mappings()
+    ]
+
+def call_titles_by_genre() -> list[dict]:
+    result: Table = db.session.execute(
+        text("CALL titles_by_genre()")
+    )
+    return [{ "genre": row["genres"], "titles": row["titles"] } for row in result.mappings()]
+
+def call_titles_by_countries() -> list[dict]:
+    result: Table = db.session.execute(
+        text("CALL titles_by_countries()")
+    )
+    return [{ "countries": row["countries"], "titles": row["titles"] } for row in result.mappings()]
 
 def call_top_actor_by_genre() -> list[dict]:
-    result = db.session.execute(
+    result: Table = db.session.execute(
         text("""CALL top_actor_by_genre()""")
     )
     return [row["countries"] for row in result.mappings()]
 
-def call_show_all_countries() -> [str]:
-    result = db.session.execute(
-        text("""CALL show_all_countries()""")
-    )
-    return [row["countries"] for row in result.mappings()]
-
-def call_show_countries(title: str) -> [str]:
-    result = db.session.execute(
-        text("""CALL show_countries(:title)"""), {'title': title}
-    )
-    return [row["countries"] for row in result.mappings()]
-
-def call_show_directors(title: str) -> list[str]:
-    result = db.session.execute(
-        text("""CALL show_directors(:title)"""), {'title': title}
-    )
-    return [row["directors"] for row in result.mappings()]
-
-
-def call_show_actors(title: str) -> [str]:
-    result = db.session.execute(
-        text("""CALL show_actors(:title)"""), {'title': title}
-    )
-    return [row["actors"] for row in result.mappings()]
-
-'''CONFIRMEM A PARTIR DAQUI'''
-def call_show_top10_genre(category_type: str) -> [str]:
-    result = db.session.execute(
-        text("""CALL show_directors(:category_type)"""), {'category_type': category_type}
+def call_titles_top10_genre(category_type: str) -> list[str]:
+    result: Table = db.session.execute(
+        text("""CALL titles_top10_genre(:category_type)"""),
+        { 'category_type': category_type }
     )
     return [row["title"] for row in result.mappings()]
-'''probably delete this'''
+
 def call_top_actor_by_genre() -> list[dict]:
-    result = db.session.execute(
+    result: Table = db.session.execute(
         text("""CALL top_actor_by_genre()""")
     )
     return [dict(row) for row in result.fetchall()]

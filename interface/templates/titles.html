@@ -29,7 +29,7 @@
       min="0" 
     />
 
-    <a href=""  class="btn"><button>Apply Filter</button></a>
+    <a href="" class="btn"><button>Apply Filter</button></a>
   </form>
 </div>
 
@@ -45,9 +45,9 @@
     {% if titles %}
       {% for item in titles %}
       <tr>
-        <td><a href="#" class="no-style-link">{{ item.title }}</a></td>
-        <td>{{ item.duration}}</td>
-        <td>{{ item.description }}</td>
+        <td><a href="#" class="no-style-link">{{ item["title"] }}</a></td>
+        <td>{{ item["duration"] }}</td>
+        <td>{{ item["description"] }}</td>
       </tr>
       {% endfor %}
     {% else %}  

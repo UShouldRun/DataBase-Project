@@ -1,93 +1,86 @@
 from main import app
 from flask import render_template, request 
 from repository import  *
+
 # routes
 @app.route("/")
 def homepage():
     return render_template("homepage.html")
 
-@app.route("/actors",methods=["GET"])
+@app.route("/actors", methods=["GET"])
 def show_all_actors():
     title = request.args.get("title")
-    if title:
-        actors=call_show_actors(title.strip())
-    else:
-        actors=call_show_all_actors()
-    
-    return render_template("actors.html", actors=actors)
+    return render_template(
+        "actors.html",
+        actors = call_actors(title.strip()) if title else call_actors_all()
+    )
 
 @app.route("/directors")
 def show_all_directors():
     title = request.args.get("title")
-    if title:
-        directors=call_show_directors(title.strip())
-    else:
-        directors=call_show_all_directors()
-    
-    return render_template("directors.html", directors=directors)
+    return render_template(
+        "directors.html",
+        directors = call_directors(title.strip()) if title else call_directors_all()
+    )
 
 @app.route("/shows")
 def show_all_shows():
     shows = [
-    {
-        "type": "Movie",
-        "title": "As aventuras da cadeira de base de dados",
-        "directors": ["João", "Henrique"],
-        "cast": ["João", "Henrique", "Rossi", "Alex"],
-        "country": ["Portugal"],
-        "release_year": [2024],
-        "rating": "TOP G",
-        "duration": "1 mês",
-        "listed_in": ["Comedy", "Dramatic"],
-        "description": ["4 jovens tentam desesperadamente acabar uma app para a faculdade"],
-    },
+        {
+            "type": "Movie",
+            "title": "As aventuras da cadeira de base de dados",
+            "directors": ["João", "Henrique"],
+            "cast": ["João", "Henrique", "Rossi", "Alex"],
+            "countries": ["Portugal"],
+            "release_year": [2024],
+            "rating": "TOP G",
+            "duration": "1 mês",
+            "listed_in": ["Comedy", "Dramatic"],
+            "description": ["4 jovens tentam desesperadamente acabar uma app para a faculdade"],
+        },
     ]
     return render_template("shows.html", shows=shows)
 
 @app.route("/genres", methods=["GET"])
 def show_genres():
     title = request.args.get("title")
-
-    if title:
-        genres = call_show_genre(title.strip())
-    else:
-        genres = call_show_all_genres()
-
-    return render_template("genres.html", genres=genres)
+    return render_template(
+        "genres.html",
+        genres = call_genres(title.strip) if title else call_genres_all()
+    )
 
 @app.route("/countries", methods=["GET"])
 def show_countries():
     title = request.args.get("title")
-
-    if title:
-        countries = call_show_countries(title.strip())
-    else:
-        countries = call_show_all_countries()
-
-    return render_template("countries.html", countries=countries)
+    return render_template(
+        "countries.html",
+        countries = call_countries(title.strip) if title else call_countries_all()
+    )
 
 @app.route("/titles", methods=["GET"])
 def show_titles():
-    val =  request.args.get("val") 
+    val = request.args.get("val") 
     
-    titles=[]
+    titles = []
     if val == "genre":
         genre = request.args.get("genre") 
-        all_titles = call_show_all_shows_by_genre()  
+        all_titles = call_titles_by_genre()
+        print(all_titles)
         for item in all_titles:
-            if item["genre"].lower() == genre.lower():  # Case-insensitive match
-                titles = item["movies"].split(", ")  
+            if item["genre"].lower() == genre.lower():
+                titles = item["titles"].split(", ")  
                 break
-    elif val == "country":
-        country = request.args.get("country") 
-       
-        all_titles = call_show_all_shows_by_country()  
+    elif val == "countries":
+        countries = request.args.get("countries") 
+        all_titles = call_titles_by_countries()  
         for item in all_titles:
-            if item["country"].lower() == country.lower():  # Case-insensitive match
-                titles = item["movies"].split(", ")  
+            if item["countries"].lower() == countries.lower():
+                titles = item["titles"].split(", ")  
                 break
     else:
-        titles = call_show_all_titles() 
+        titles = call_titles_all() 
 
-
-    return render_template("titles.html", titles=titles)
+    return render_template(
+        "titles.html",
+        titles = titles
+    )

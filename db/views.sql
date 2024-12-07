@@ -1,28 +1,25 @@
 USE DisneyDB;
 
-DROP PROCEDURE IF EXISTS show_all_actors;
-DROP PROCEDURE IF EXISTS show_all_directors;
-DROP PROCEDURE IF EXISTS show_all_genres;
-DROP PROCEDURE IF EXISTS show_countries;
-DROP PROCEDURE IF EXISTS show_all_countries;
-DROP PROCEDURE IF EXISTS show_genre;
-DROP PROCEDURE IF EXISTS show_streaming_countries;
-DROP PROCEDURE IF EXISTS show_directors;
-DROP PROCEDURE IF EXISTS show_actors;
-DROP PROCEDURE IF EXISTS show_films_by_director;
-DROP PROCEDURE IF EXISTS show_films_by_actor;
-DROP PROCEDURE IF EXISTS show_yearly_count;
-DROP PROCEDURE IF EXISTS show_top10_genre;
+DROP PROCEDURE IF EXISTS actors_all;
+DROP PROCEDURE IF EXISTS actors;
+DROP PROCEDURE IF EXISTS directors_all;
+DROP PROCEDURE IF EXISTS directors;
+DROP PROCEDURE IF EXISTS genres_all;
+DROP PROCEDURE IF EXISTS genres;
+DROP PROCEDURE IF EXISTS countries_all;
+DROP PROCEDURE IF EXISTS countries;
+DROP PROCEDURE IF EXISTS titles_by_director;
+DROP PROCEDURE IF EXISTS titles_by_actor;
+DROP PROCEDURE IF EXISTS titles_by_country;
+DROP PROCEDURE IF EXISTS titles_by_genre;
+DROP PROCEDURE IF EXISTS titles_yearly_count;
+DROP PROCEDURE IF EXISTS titles_top10_by_genre;
 DROP PROCEDURE IF EXISTS top_actor_by_genre;
 DROP PROCEDURE IF EXISTS top_actor;
-DROP PROCEDURE IF EXISTS show_all_shows_by_country;
-DROP PROCEDURE IF EXISTS show_all_shows_by_genre;
 
 DELIMITER //
 
--- OPERAÇÕES GERAIS
-
-CREATE PROCEDURE show_all_actors()
+CREATE PROCEDURE actors_all()
 BEGIN 
   SELECT DISTINCT Person.person_name AS actors
   FROM Person
@@ -31,7 +28,18 @@ BEGIN
   ORDER BY TRIM(Person.person_name);
 END//
 
-CREATE PROCEDURE show_all_directors()
+CREATE PROCEDURE actors(IN title VARCHAR(100))
+BEGIN    
+  SELECT Person.person_name as actors
+  FROM Person
+  NATURAL JOIN Paper
+  NATURAL JOIN Shows
+  WHERE LOWER(Shows.title) = LOWER(title) AND LOWER(Paper.paper_role) = 'actor' 
+  GROUP BY Person.person_name
+  ORDER BY Person.person_name;
+END//
+
+CREATE PROCEDURE directors_all()
 BEGIN 
   SELECT DISTINCT Person.person_name AS directors
   FROM Person
@@ -40,63 +48,116 @@ BEGIN
   ORDER BY TRIM(Person.person_name);
 END//
 
-CREATE PROCEDURE show_all_genres()
+CREATE PROCEDURE directors(IN title VARCHAR(100))
+BEGIN
+  SELECT Person.person_name as directors
+  FROM Person
+  NATURAL JOIN Paper
+  NATURAL JOIN Shows
+  WHERE LOWER(Shows.title) = LOWER(title) AND LOWER(Paper.paper_role) = 'director'
+  GROUP BY Person.person_name
+  ORDER BY Person.person_name;
+END//
+
+CREATE PROCEDURE genres_all()
 BEGIN
   SELECT DISTINCT genre_name AS genres
   FROM Genre
   ORDER BY genre_name;
 END//
 
-CREATE PROCEDURE show_all_movies()
-BEGIN
-  SELECT DISTINCT
-    shows.title AS title
-  FROM shows
-  NATURAL JOIN duration
-  NATURAL JOIN category
-  WHERE LOWER(category.category_type) = 'tv show'
-  ORDER BY shows.title;
+CREATE PROCEDURE genres(IN title VARCHAR(100))
+BEGIN	
+  SELECT Genre.genre_name AS genres
+  FROM Shows
+  NATURAL JOIN ListedIn
+  NATURAL JOIN Genre
+  WHERE LOWER(Shows.title) = LOWER(title) 
+  ORDER BY Genre.genre_name;
 END//
 
-CREATE PROCEDURE show_all_series()
+CREATE PROCEDURE countries_all()
 BEGIN
-  SELECT DISTINCT
-    shows.title AS title
-  FROM shows
-  NATURAL JOIN duration
-  NATURAL JOIN category
-  WHERE LOWER(category.category_type) = 'tv show'
-  ORDER BY shows.title;
+  SELECT DISTINCT country_name AS countries
+  FROM Country
+  ORDER BY country_name;
 END//
 
-CREATE PROCEDURE show_all_shows_by_genre()
+CREATE PROCEDURE countries(IN in_title VARCHAR(100))
+BEGIN
+	SELECT Country.country_name AS countries
+	FROM Country
+	NATURAL JOIN StreamingOn
+	NATURAL JOIN Shows
+	WHERE LOWER(Shows.title) = LOWER(in_title);
+END//
+
+CREATE PROCEDURE titles_by_director(IN director VARCHAR(100))
+BEGIN
+  SELECT Shows.title
+  FROM Shows 
+  NATURAL JOIN Paper
+  NATURAL JOIN Person
+  WHERE LOWER(Paper.paper_role) = 'director' AND LOWER(Person.person_name) = LOWER(director)
+  GROUP BY Shows.title
+  ORDER BY Shows.title;
+END//
+
+CREATE PROCEDURE titles_by_actor(IN actor VARCHAR(100))
+BEGIN
+  SELECT Shows.title
+  FROM Shows
+  NATURAL JOIN Paper
+  NATURAL JOIN Person
+  WHERE LOWER(Paper.paper_role) = 'actor' AND LOWER(Person.person_name) = LOWER(actor)
+  GROUP BY Shows.title
+  ORDER BY Shows.title;
+END//
+
+CREATE PROCEDURE titles_by_genre()
 BEGIN
   SELECT 
-    genre.genre_name AS genres,
-    GROUP_CONCAT(shows.title ORDER BY shows.title SEPARATOR ', ') AS movies
-  FROM 
-      shows 
-  NATURAL JOIN listedin
-  NATURAL JOIN genre 
-  GROUP BY 
-      genre.genre_name
-  ORDER BY 
-      genre.genre_name;
+    Genre.genre_name AS genres,
+    GROUP_CONCAT(DISTINCT Shows.title ORDER BY Shows.title SEPARATOR ', ') AS titles
+  FROM Shows 
+  NATURAL JOIN ListedIn
+  NATURAL JOIN Genre 
+  GROUP BY Genre.genre_name
+  ORDER BY Genre.genre_name;
 END//
 
-CREATE PROCEDURE show_all_shows_by_country()
+CREATE PROCEDURE titles_by_country()
 BEGIN
   SELECT 
-    country.country_name AS country,
-    GROUP_CONCAT(shows.title ORDER BY shows.title SEPARATOR ', ') AS movies
-  FROM 
-      shows 
-  NATURAL JOIN streamingon
-  NATURAL JOIN country
-  GROUP BY 
-      country.country_name
-  ORDER BY 
-      country.country_name;
+    Country.country_name AS country,
+    GROUP_CONCAT(DISTINCT Shows.title ORDER BY Shows.title SEPARATOR ', ') AS titles
+  FROM Shows 
+  NATURAL JOIN StreamingOn
+  NATURAL JOIN Country
+  GROUP BY Country.country_name
+  ORDER BY Country.country_name;
+END//
+
+CREATE PROCEDURE titles_yearly_count(IN category_type VARCHAR(10))
+BEGIN
+  SELECT Shows.release_year, COUNT(*) AS show_count
+  FROM Shows
+  NATURAL JOIN Duration
+  NATURAL JOIN Category
+  WHERE (category_type IS NULL OR Category.category_type = category_type)
+  GROUP BY Shows.release_year
+  ORDER BY show_count DESC;
+END//
+
+CREATE PROCEDURE titles_top10_by_genre(IN category_type VARCHAR(10))
+BEGIN
+  SELECT Shows.title
+  FROM genres_count
+  NATURAL JOIN Shows
+  NATURAL JOIN Duration
+  NATURAL JOIN Category
+  WHERE category_type IS NULL OR Category.category_type = category_type
+  LIMIT 10;
 END//
 
 CREATE PROCEDURE top_actor_by_genre()
@@ -134,143 +195,14 @@ BEGIN
   LIMIT 10;
 END//
 
+-- Views
 
--- OPERAÇÕES PARA UM SHOW ESPECIFICO
-
-CREATE PROCEDURE show_actors(IN title VARCHAR(100))
-BEGIN    
-  SELECT Person.person_name as actors
-  FROM Person
-  NATURAL JOIN Paper
-  NATURAL JOIN Shows
-  WHERE LOWER(Shows.title) = LOWER(title) AND LOWER(Paper.paper_role) = 'actor' 
-  GROUP BY Person.person_name
-  ORDER BY Person.person_name;
-END//
-
-CREATE PROCEDURE show_directors(IN title VARCHAR(100))
-BEGIN
-  SELECT Person.person_name as directors
-  FROM Person
-  NATURAL JOIN Paper
-  NATURAL JOIN Shows
-  WHERE LOWER(Shows.title) = LOWER(title) AND LOWER(Paper.paper_role) = 'director'
-  GROUP BY Person.person_name
-  ORDER BY Person.person_name;
-END//
-
-CREATE PROCEDURE show_genre(IN title VARCHAR(100))
-BEGIN	
-  SELECT g.genre_name AS genres
-  FROM Shows s
-  NATURAL JOIN ListedIn li 
-  NATURAL JOIN Genre g
-  WHERE LOWER(s.title) = LOWER(title) 
-  ORDER BY g.genre_name;
-END//
-
-CREATE PROCEDURE show_countries(IN in_title VARCHAR(100))
-BEGIN
-	SELECT Country.country_name AS countries
-	FROM Country
-	NATURAL JOIN StreamingOn
-	NATURAL JOIN Shows
-	WHERE LOWER(Shows.title) = LOWER(in_title);
-END//
-
-CREATE PROCEDURE show_all_countries()
-BEGIN
-  SELECT DISTINCT country_name AS countries
-  FROM Country
-  ORDER BY country_name;
-END//
-
-CREATE OR REPLACE VIEW show_genre_count AS
+CREATE OR REPLACE VIEW genres_count AS
 SELECT Shows.show_id, COUNT(*) AS genre_count
 FROM Shows
 NATURAL JOIN ListedIn
 GROUP BY Shows.show_id
 ORDER BY genre_count DESC;
-
--- OPERAÇÕES PARA UM ATOR ESPECIFICO
-
-CREATE PROCEDURE show_films_by_actor(IN actor VARCHAR(100))
-BEGIN
-  SELECT Shows.title
-  FROM Shows
-  NATURAL JOIN Paper
-  NATURAL JOIN Person
-  WHERE LOWER(Paper.paper_role) = 'actor' AND LOWER(Person.person_name) = LOWER(actor)
-  GROUP BY Shows.title
-  ORDER BY Shows.title;
-END//
-
--- OPERAÇÕES PARA UM DIRETOR ESPECIFICO
-
-CREATE PROCEDURE show_films_by_director(IN director VARCHAR(100))
-BEGIN
-  SELECT Shows.title
-  FROM Shows 
-  NATURAL JOIN Paper
-  NATURAL JOIN Person
-  WHERE LOWER(Paper.paper_role) = 'director' AND LOWER(Person.person_name) = LOWER(director)
-  GROUP BY Shows.title
-  ORDER BY Shows.title;
-END//
-
--- OPERAÇÕES PARA UM GÉNERO ESPECIFICO
-
-CREATE PROCEDURE show_yearly_count(IN category_type VARCHAR(10))
-BEGIN
-  SELECT Shows.release_year, COUNT(*) AS show_count
-  FROM Shows
-  NATURAL JOIN Duration
-  NATURAL JOIN Category
-  WHERE (category_type IS NULL OR Category.category_type = category_type)
-  GROUP BY Shows.release_year
-  ORDER BY show_count DESC;
-END//
-
-CREATE PROCEDURE show_top10_genre(IN category_type VARCHAR(10))
-BEGIN
-  SELECT Shows.title
-  FROM show_genre_count
-  NATURAL JOIN Shows
-  NATURAL JOIN Duration
-  NATURAL JOIN Category
-  WHERE category_type IS NULL OR Category.category_type = category_type
-  LIMIT 10;
-END//
-
---OPERAÇÕES PARA UMA DETERMINADA DURAÇÃO
-
-CREATE PROCEDURE show_within_restrictions(IN category_type, IN in_min_time INT, IN in_max_time INT)
-BEGIN
-  SELECT DISTINCT
-    shows.title AS title,
-    duration.duration_time AS duration 
-  FROM shows
-  NATURAL JOIN duration
-  NATURAL JOIN durationunit
-  NATURAL JOIN category
-  WHERE in_min_time >= duration.duration_time <= in_max_time AND category.category_type = in_category_type
-  ORDER BY duration.duration_time DESC;
-END//
-
--- VIEWS
-
-CREATE OR REPLACE VIEW show_database AS
-SELECT *
-FROM shows 
-NATURAL JOIN paper 
-NATURAL JOIN person 
-NATURAL JOIN duration 
-NATURAL JOIN category 
-NATURAL JOIN durationunit
-NATURAL JOIN streamingon
-NATURAL JOIN country
-NATURAL JOIN listedin
-NATURAL JOIN genre;
 
 CREATE OR REPLACE VIEW genre_show_count AS
 SELECT genre_id, COUNT(*) AS genre_count

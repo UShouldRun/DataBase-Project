@@ -21,11 +21,12 @@
   background-color: #0b5546;
 
 }
+
 .back_btn{
   inherits: btn;
-  left:10px;
-  
+  left: 10px;
 }
+
 .styled-table {
   width: 100%;
   border-collapse: collapse;
@@ -46,6 +47,7 @@
   padding: 12px 15px;
   text-align: center ;
 }
+
 .styled-table td {
   border: 1px solid #dddddd;
   padding: 12px 15px;
@@ -63,25 +65,29 @@
 .styled-table tbody tr:last-of-type {
   border-bottom: 2px solid #009879;
 }
+
 .no-style-link {
-  color: inherit; /* Match the text color of its parent */
-  text-decoration: none; /* Remove the underline */
+  color: inherit;
+  text-decoration: none;
 }
 
 .no-style-link:hover {
   text-decoration: underline; 
   color: darkgray; 
 }
-img {
+
+.img {
   display: block;
   margin-left: auto;
   margin-right: auto;
   width: 50%;
 }
+
 .styled-table td.butt {
   text-align: center;
   vertical-align: middle; 
 }
+
 .genre-form {
   display: flex;
   justify-content: center;
@@ -122,8 +128,3 @@ img {
   border: 1px solid #ddd;
   border-radius: 5px;
 }
-
-
-
-
-
