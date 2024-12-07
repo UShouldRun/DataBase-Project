@@ -85,7 +85,7 @@ def call_titles_by_genre() -> list[dict]:
 
 def call_titles_by_countries() -> list[dict]:
     result: Table = db.session.execute(
-        text("CALL titles_by_countries()")
+        text("CALL titles_by_country()")
     )
     return [{ "countries": row["countries"], "titles": row["titles"] } for row in result.mappings()]
 

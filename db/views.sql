@@ -117,7 +117,7 @@ END//
 CREATE PROCEDURE titles_by_genre()
 BEGIN
   SELECT 
-    Genre.genre_name AS genres,
+    Genre.genre_name AS genres, 
     GROUP_CONCAT(DISTINCT Shows.title ORDER BY Shows.title SEPARATOR ', ') AS titles
   FROM Shows 
   NATURAL JOIN ListedIn
@@ -129,7 +129,7 @@ END//
 CREATE PROCEDURE titles_by_country()
 BEGIN
   SELECT 
-    Country.country_name AS country,
+    Country.country_name AS countries,
     GROUP_CONCAT(DISTINCT Shows.title ORDER BY Shows.title SEPARATOR ', ') AS titles
   FROM Shows 
   NATURAL JOIN StreamingOn

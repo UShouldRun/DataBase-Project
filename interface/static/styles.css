@@ -128,3 +128,11 @@
   border: 1px solid #ddd;
   border-radius: 5px;
 }
+.resized-image {
+  max-width: 100%; 
+  height: auto; 
+  width: 800px; 
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}

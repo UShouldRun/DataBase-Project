@@ -46,7 +46,7 @@ def show_genres():
     title = request.args.get("title")
     return render_template(
         "genres.html",
-        genres = call_genres(title.strip) if title else call_genres_all()
+        genres = call_genres(title.strip()) if title else call_genres_all()
     )
 
 @app.route("/countries", methods=["GET"])
@@ -54,7 +54,7 @@ def show_countries():
     title = request.args.get("title")
     return render_template(
         "countries.html",
-        countries = call_countries(title.strip) if title else call_countries_all()
+        countries = call_countries(title.strip()) if title else call_countries_all()
     )
 
 @app.route("/titles", methods=["GET"])
@@ -65,13 +65,13 @@ def show_titles():
     if val == "genre":
         genre = request.args.get("genre") 
         all_titles = call_titles_by_genre()
-        print(all_titles)
         for item in all_titles:
             if item["genre"].lower() == genre.lower():
                 titles = item["titles"].split(", ")  
                 break
-    elif val == "countries":
-        countries = request.args.get("countries") 
+    elif val == "country":
+        countries = request.args.get("country")
+        print(countries) 
         all_titles = call_titles_by_countries()  
         for item in all_titles:
             if item["countries"].lower() == countries.lower():
