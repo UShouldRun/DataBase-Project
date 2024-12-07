@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS Paper (
   show_id    INT NOT NULL,
   person_id  INT,	
   paper_role VARCHAR(10) NOT NULL,
-  PRIMARY KEY (show_id, person_id),
+  PRIMARY KEY (show_id, person_id, paper_role),
   FOREIGN KEY (show_id)   REFERENCES Shows(show_id),
   FOREIGN KEY (person_id) REFERENCES Person(person_id)
 );

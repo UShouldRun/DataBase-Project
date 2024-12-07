@@ -10,7 +10,6 @@ CREATE PROCEDURE create_show(
 ) BEGIN  
   INSERT INTO Shows (title, release_year, release_date , rating, show_description) 
   VALUES (in_title, in_release_year, in_release_date, in_rating, in_show_description);
-  
   SET _id = LAST_INSERT_id();
 END//
 
@@ -20,19 +19,15 @@ CREATE PROCEDURE create_person(
 ) BEGIN
   INSERT INTO Person(person_name)
   VALUES (in_person_name);
-  
   SET _id = LAST_INSERT_id();
-
 END//
 
 CREATE PROCEDURE create_genre(
   IN in_genre_name VARCHAR(50),
   OUT _id INT
-
 ) BEGIN
   INSERT INTO Genre (genre_name)
   VALUES (in_genre_name);
-  
   SET _id = LAST_INSERT_id();
 END//
 
@@ -42,9 +37,7 @@ CREATE PROCEDURE create_country(
 ) BEGIN
   INSERT INTO Country(country_name)
   VALUES (in_country_name);
-  
   SET _id = LAST_INSERT_id();
-
 END//
 
 CREATE PROCEDURE create_category(
@@ -53,7 +46,6 @@ CREATE PROCEDURE create_category(
 ) BEGIN
   INSERT INTO Category(category_type)
   VALUES (in_category_type);
-  
   SET _id = LAST_INSERT_id();
 END//
 
@@ -88,9 +80,7 @@ CREATE PROCEDURE create_duration_unit(
 ) BEGIN
   INSERT INTO DurationUnit(unit_name)
   VALUES (in_unit_name);
-  
   SET _id = LAST_INSERT_id();
-
 END//
 
 CREATE PROCEDURE create_duration(

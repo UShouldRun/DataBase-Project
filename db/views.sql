@@ -68,7 +68,7 @@ END//
 
 CREATE PROCEDURE genres(IN title VARCHAR(100))
 BEGIN	
-  SELECT Genre.genre_name AS genres
+  SELECT DISTINCT Genre.genre_name AS genres
   FROM Shows
   NATURAL JOIN ListedIn
   NATURAL JOIN Genre
@@ -116,7 +116,7 @@ END//
 
 CREATE PROCEDURE titles_by_genre(IN in_genre VARCHAR(50))
 BEGIN
-  SELECT 
+  SELECT DISTINCT
     Genre.genre_name AS genre,
     Shows.title AS title,
     Duration.duration_time AS duration,
@@ -127,13 +127,13 @@ BEGIN
   NATURAL JOIN Genre 
   NATURAL JOIN Duration
   NATURAL JOIN DurationUnit
-  WHERE Genre.genre_name=in_genre
+  WHERE Genre.genre_name = in_genre
   ORDER BY Shows.title;
 END//
 
 CREATE PROCEDURE titles_by_country(IN in_country VARCHAR(50))
 BEGIN
-  SELECT 
+  SELECT DISTINCT
     Country.country_name AS country,
     Shows.title AS title,
     Duration.duration_time AS duration,
@@ -144,7 +144,7 @@ BEGIN
   NATURAL JOIN Country
   NATURAL JOIN Duration
   NATURAL JOIN DurationUnit
-  WHERE Country.country_name=in_country
+  WHERE Country.country_name = in_country
   ORDER BY Shows.title;
 END//
 -- OPERAÇÕES PARA UMA DETERMINADA DURAÇÃO
@@ -152,16 +152,16 @@ END//
 CREATE PROCEDURE show_within_restrictions(IN in_category_type VARCHAR(50), IN in_min_time INT, IN in_max_time INT)
 BEGIN
   SELECT DISTINCT
-    shows.title AS title,
-    duration.duration_time AS duration,
-    durationUnit.unit_name AS unit,
-    shows.show_description AS description
-  FROM shows
-  NATURAL JOIN duration
-  NATURAL JOIN durationunit
-  NATURAL JOIN category
-  WHERE duration.duration_time BETWEEN in_min_time AND in_max_time AND category.category_type = in_category_type
-  ORDER BY duration.duration_time DESC;
+    Shows.title AS title,
+    Duration.duration_time AS duration,
+    DurationUnit.unit_name AS unit,
+    Shows.show_description AS description
+  FROM Shows
+  NATURAL JOIN Duration
+  NATURAL JOIN DurationUnit
+  NATURAL JOIN Category
+  WHERE Duration.duration_time BETWEEN in_min_time AND in_max_time AND Category.category_type = in_category_type
+  ORDER BY Duration.duration_time DESC;
 END//
 
 CREATE PROCEDURE titles_yearly_count(IN category_type VARCHAR(10))
