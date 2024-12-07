@@ -41,18 +41,6 @@ def show_all_shows():
         "listed_in": ["Comedy", "Dramatic"],
         "description": ["4 jovens tentam desesperadamente acabar uma app para a faculdade"],
     },
-    {
-        "type": "Movie",
-        "title": "O comuna tirano",
-        "directors": ["Rogério"],
-        "cast": ["Rogério"],
-        "country": ["Portugal"],
-        "release_year": [2024],
-        "rating": "Salvem me",
-        "duration": "2 semestres",
-        "listed_in": ["Comedy", "Dramatic","Terror"],
-        "description": ["O comuna tirano dá-nos aulas de estruturas de dados e modelos de computação"],
-    }
     ]
     return render_template("shows.html", shows=shows)
 
@@ -77,3 +65,29 @@ def show_countries():
         countries = call_show_all_countries()
 
     return render_template("countries.html", countries=countries)
+
+@app.route("/titles", methods=["GET"])
+def show_titles():
+    val =  request.args.get("val") 
+    
+    titles=[]
+    if val == "genre":
+        genre = request.args.get("genre") 
+        all_titles = call_show_all_shows_by_genre()  
+        for item in all_titles:
+            if item["genre"].lower() == genre.lower():  # Case-insensitive match
+                titles = item["movies"].split(", ")  
+                break
+    elif val == "country":
+        country = request.args.get("country") 
+       
+        all_titles = call_show_all_shows_by_country()  
+        for item in all_titles:
+            if item["country"].lower() == country.lower():  # Case-insensitive match
+                titles = item["movies"].split(", ")  
+                break
+    else:
+        titles = call_show_all_titles() 
+
+
+    return render_template("titles.html", titles=titles)

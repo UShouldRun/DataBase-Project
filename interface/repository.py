@@ -27,6 +27,11 @@ def call_show_all_genres() -> [str]:
     genre_array = [row["genres"] for row in result.mappings()]
     return genre_array
 
+def call_show_all_titles()->[str]:
+    result = db.session.execute(
+        text("SELECT title as titles FROM Shows ORDER BY title")
+    )
+    return [row["titles"] for row in result.mappings()]
 '''A PARTIR DAQUI    '''
 def call_show_all_shows_by_country() -> list[dict]:
     result = db.session.execute(
@@ -39,7 +44,7 @@ def call_show_all_shows_by_genre() -> list[dict]:
     result = db.session.execute(
         text("CALL show_all_shows_by_genre()")
     )
-    movies_array = [{"genre": row["genre"], "movies": row["movies"]} for row in result.mappings()]
+    movies_array = [{"genre": row["genres"], "movies": row["movies"]} for row in result.mappings()]
     return movies_array
 '''---------------------------'''
 

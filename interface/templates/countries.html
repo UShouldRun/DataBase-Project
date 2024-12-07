@@ -9,7 +9,9 @@
   {% if countries %}
     {% for country in countries %}
     <tr>
-        <td>{{ country }}</td>
+        <td>
+        <a href="/titles?val=country&country={{ country | urlencode }}" class="no-style-link">{{ country }}</a>
+        </td>
     </tr>
     {% endfor %}
   {% else %}

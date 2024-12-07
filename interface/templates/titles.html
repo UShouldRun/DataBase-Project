@@ -1,21 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Genres</h1>
+<h1>Show titles</h1>
 <table class="styled-table">
   <tr>
     <th><b>Name</b></th>
   </tr>
-  {% if genres %}
-    {% for genre in genres %}
+  {% if titles %}
+    {% for title in titles %}
     <tr>
         <td>
-          <a href="/titles?val=genre&genre={{ genre | urlencode }}" class="no-style-link">{{ genre }}</a>
+          <a href="" class="no-style-link">{{ title }}</a>
         </td>
     </tr>
     {% endfor %}
   {% else %}
-  <p>No genres found.</p>
+  <p>No titles found.</p>
   {% endif %}
   
 </table>

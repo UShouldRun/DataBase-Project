@@ -13,12 +13,14 @@ DROP PROCEDURE IF EXISTS show_films_by_director;
 DROP PROCEDURE IF EXISTS show_films_by_actor;
 DROP PROCEDURE IF EXISTS show_yearly_count;
 DROP PROCEDURE IF EXISTS show_top10_genre;
-DROP PROCEDURE IF EXISTS top_actor_per_genre;
+DROP PROCEDURE IF EXISTS top_actor_by_genre;
 DROP PROCEDURE IF EXISTS top_actor;
+DROP PROCEDURE IF EXISTS show_all_shows_by_country;
+DROP PROCEDURE IF EXISTS show_all_shows_by_genre;
 
 DELIMITER //
 
---OPERAÇÕES GERAIS
+-- OPERAÇÕES GERAIS
 
 CREATE PROCEDURE show_all_actors()
 BEGIN 
@@ -45,7 +47,7 @@ BEGIN
   ORDER BY genre_name;
 END//
 
---ADICIONEI AS DUAS SEGUINTES
+-- ADICIONEI AS DUAS SEGUINTES
 CREATE PROCEDURE show_all_shows_by_genre()
 BEGIN
   SELECT 
@@ -112,11 +114,11 @@ BEGIN
 END//
 
 
---OPERAÇÕES PARA UM SHOW ESPECIFICO
+-- OPERAÇÕES PARA UM SHOW ESPECIFICO
 
 CREATE PROCEDURE show_actors(IN title VARCHAR(100))
 BEGIN    
-  SELECT Person.person_name
+  SELECT Person.person_name as actors
   FROM Person
   NATURAL JOIN Paper
   NATURAL JOIN Shows
@@ -127,7 +129,7 @@ END//
 
 CREATE PROCEDURE show_directors(IN title VARCHAR(100))
 BEGIN
-  SELECT Person.person_name
+  SELECT Person.person_name as directors
   FROM Person
   NATURAL JOIN Paper
   NATURAL JOIN Shows
@@ -169,7 +171,7 @@ NATURAL JOIN ListedIn
 GROUP BY Shows.show_id
 ORDER BY genre_count DESC;
 
---OPERAÇÕES PARA UM ATOR ESPECIFICO
+-- OPERAÇÕES PARA UM ATOR ESPECIFICO
 
 CREATE PROCEDURE show_films_by_actor(IN actor VARCHAR(100))
 BEGIN
@@ -182,7 +184,7 @@ BEGIN
   ORDER BY Shows.title;
 END//
 
---OPERAÇÕES PARA UM DIRETOR ESPECIFICO
+-- OPERAÇÕES PARA UM DIRETOR ESPECIFICO
 
 CREATE PROCEDURE show_films_by_director(IN director VARCHAR(100))
 BEGIN
@@ -195,7 +197,7 @@ BEGIN
   ORDER BY Shows.title;
 END//
 
---OPERAÇÕES PARA UM GÉNERO ESPECIFICO
+-- OPERAÇÕES PARA UM GÉNERO ESPECIFICO
 
 CREATE PROCEDURE show_yearly_count(IN category_type VARCHAR(10))
 BEGIN
@@ -219,7 +221,7 @@ BEGIN
   LIMIT 10;
 END//
 
---VIEWS
+-- VIEWS
 
 CREATE OR REPLACE VIEW show_database AS
 SELECT *
@@ -232,7 +234,7 @@ NATURAL JOIN durationunit
 NATURAL JOIN streamingon
 NATURAL JOIN country
 NATURAL JOIN listedin
-NATURAL JOIN genre
+NATURAL JOIN genre;
 
 CREATE OR REPLACE VIEW genre_show_count AS
 SELECT genre_id, COUNT(*) AS genre_count
@@ -268,4 +270,3 @@ FROM Paper
 NATURAL JOIN Shows
 NATURAL JOIN ListedIn
 GROUP BY ListedIn.genre_id, Paper.person_id, Paper.paper_role;
-
