@@ -70,7 +70,7 @@ def show_titles():
         country = request.args.get("country") 
         if country:
             titles = call_titles_by_country(country)
-    elif val=="filter":
+    elif val == "filter":
         category_type = request.args.get("category")
         if category_type=="All":
                 return render_template(
@@ -83,7 +83,7 @@ def show_titles():
         min_time = int(min_time) if min_time and min_time.isdigit() else 0
         max_time = int(max_time) if max_time and max_time.isdigit() else 99999
 
-        titles=call_show_within_restrictions(category_type,min_time, max_time)
+        titles = call_show_within_restrictions(category_type,min_time, max_time)
     else:
         titles = call_titles_all() 
 

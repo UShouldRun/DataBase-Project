@@ -12,6 +12,7 @@ DROP PROCEDURE IF EXISTS titles_by_director;
 DROP PROCEDURE IF EXISTS titles_by_actor;
 DROP PROCEDURE IF EXISTS titles_by_country;
 DROP PROCEDURE IF EXISTS titles_by_genre;
+DROP PROCEDURE IF EXISTS titles_by_rating;
 DROP PROCEDURE IF EXISTS titles_yearly_count;
 DROP PROCEDURE IF EXISTS titles_top10_by_genre;
 DROP PROCEDURE IF EXISTS top_actor_by_genre;
@@ -119,6 +120,7 @@ BEGIN
   SELECT DISTINCT
     Genre.genre_name AS genre,
     Shows.title AS title,
+    Shows.rating AS rating,
     Duration.duration_time AS duration,
     DurationUnit.unit_name AS unit,
     Shows.show_description AS description
@@ -136,6 +138,7 @@ BEGIN
   SELECT DISTINCT
     Country.country_name AS country,
     Shows.title AS title,
+    Shows.rating AS rating,
     Duration.duration_time AS duration,
     DurationUnit.unit_name AS unit,
     Shows.show_description AS description
@@ -147,12 +150,29 @@ BEGIN
   WHERE Country.country_name = in_country
   ORDER BY Shows.title;
 END//
+
+CREATE PROCEDURE titles_by_rating(IN in_rating VARCHAR(30))
+BEGIN
+  SELECT DISTINCT
+    Shows.title AS title,
+    Shows.rating AS rating,
+    Duration.duration_time AS duration,
+    DurationUnit.unit_name AS unit,
+    Shows.show_description AS description
+  FROM Shows 
+  NATURAL JOIN Duration
+  NATURAL JOIN DurationUnit
+  WHERE Shows.rating = in_rating
+  ORDER BY Shows.title;
+END//
+
 -- OPERAÇÕES PARA UMA DETERMINADA DURAÇÃO
 
 CREATE PROCEDURE show_within_restrictions(IN in_category_type VARCHAR(50), IN in_min_time INT, IN in_max_time INT)
 BEGIN
   SELECT DISTINCT
     Shows.title AS title,
+    Shows.rating AS rating,
     Duration.duration_time AS duration,
     DurationUnit.unit_name AS unit,
     Shows.show_description AS description

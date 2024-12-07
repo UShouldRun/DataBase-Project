@@ -389,6 +389,7 @@ def call_titles_all() -> list[dict]:
             """
             SELECT DISTINCT
                 Shows.title AS title,
+                Shows.rating As rating,
                 Duration.duration_time AS duration,
                 DurationUnit.unit_name as unit,
                 Shows.show_description AS description
@@ -402,6 +403,7 @@ def call_titles_all() -> list[dict]:
     return [
         {
             "title":       row["title"],
+            "rating":      row["rating"],
             "duration": f"{row['duration']} {row['unit']}", 
             "description": row["description"]
         } for row in result.mappings()
@@ -410,11 +412,14 @@ def call_titles_all() -> list[dict]:
 def call_titles_by_genre(genre: str) -> list[dict]:
     result: Table = db.session.execute(
         text("CALL titles_by_genre(:in_genre)"),
-        {"in_genre": genre}
+        {
+            "in_genre": genre
+        }
     )
     return [
         {
-            "title": row["title"],
+            "title":       row["title"],
+            "rating":      row["rating"],
             "duration": f"{row['duration']} {row['unit']}",
             "description": row["description"],
         }
@@ -429,11 +434,26 @@ def call_titles_by_country(country: str) -> list[dict]:
     )
     return [
         {
-            "title": row["title"],
+            "title":       row["title"],
+            "rating":      row["rating"],
             "duration": f"{row['duration']} {row['unit']}",
             "description": row["description"],
         }
         for row in result.mappings()
+    ]
+
+def call_titles_by_rating(rating: str) -> list[dict]:
+    result: Table = db.session.execute(
+        text("CALL titles_by_rating(:in_rating)"),
+        {
+            "title":       row["title"],
+            "rating":      row["rating"],
+            "duration": f"{row['duration']} {row['unit']}",
+            "description": row["description"],
+        }
+    )
+    return [
+
     ]
 
 def call_show_within_restrictions(category_type,min_time,max_time)-> list[dict]:
@@ -456,6 +476,7 @@ def call_show_within_restrictions(category_type,min_time,max_time)-> list[dict]:
     return [
         {
             "title":       row["title"],
+            "rating":      row["rating"],
             "duration": f"{row['duration']} {row['unit']}",
             "description": row["description"],
         }
