@@ -244,7 +244,7 @@ END//
 
 --OPERAÇÕES PARA UMA DETERMINADA DURAÇÃO
 
-CREATE PROCEDURE show_within_restrictions(IN category_type, IN duration_time INT)
+CREATE PROCEDURE show_within_restrictions(IN category_type, IN in_min_time INT, IN in_max_time INT)
 BEGIN
   SELECT DISTINCT
     shows.title AS title,
@@ -253,8 +253,8 @@ BEGIN
   NATURAL JOIN duration
   NATURAL JOIN durationunit
   NATURAL JOIN category
-  WHERE duration.duration_time <= duration_time AND category.category_type = category_type
-  ORDER BY duration.duration_time;
+  WHERE in_min_time >= duration.duration_time <= in_max_time AND category.category_type = in_category_type
+  ORDER BY duration.duration_time DESC;
 END//
 
 -- VIEWS
