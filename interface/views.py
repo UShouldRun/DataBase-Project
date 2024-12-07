@@ -64,19 +64,26 @@ def show_titles():
     titles = []
     if val == "genre":
         genre = request.args.get("genre") 
-        all_titles = call_titles_by_genre()
-        for item in all_titles:
-            if item["genre"].lower() == genre.lower():
-                titles = item["titles"].split(", ")  
-                break
+        if genre:
+            titles = call_titles_by_genre(genre)
     elif val == "country":
-        countries = request.args.get("country")
-        print(countries) 
-        all_titles = call_titles_by_countries()  
-        for item in all_titles:
-            if item["countries"].lower() == countries.lower():
-                titles = item["titles"].split(", ")  
-                break
+        country = request.args.get("country") 
+        if country:
+            titles = call_titles_by_country(country)
+    elif val=="filter":
+        category_type = request.args.get("category")
+        if category_type=="All":
+                return render_template(
+                "titles.html",
+                titles = call_titles_all()
+            )
+        min_time = request.args.get("min_time")
+        max_time = request.args.get("max_time")
+
+        min_time = int(min_time) if min_time and min_time.isdigit() else 0
+        max_time = int(max_time) if max_time and max_time.isdigit() else 99999
+
+        titles=call_show_within_restrictions(category_type,min_time, max_time)
     else:
         titles = call_titles_all() 
 

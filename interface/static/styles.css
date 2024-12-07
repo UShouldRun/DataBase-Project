@@ -136,3 +136,12 @@
   margin-left: auto;
   margin-right: auto;
 }
+.logo-image {
+  max-width: 100%; 
+  height: auto; 
+  width: 50px; 
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  z-index:-10;
+}

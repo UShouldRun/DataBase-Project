@@ -16,7 +16,7 @@ DROP PROCEDURE IF EXISTS titles_yearly_count;
 DROP PROCEDURE IF EXISTS titles_top10_by_genre;
 DROP PROCEDURE IF EXISTS top_actor_by_genre;
 DROP PROCEDURE IF EXISTS top_actor;
-
+DROP PROCEDURE IF EXISTS show_within_restrictions;
 DELIMITER //
 
 CREATE PROCEDURE actors_all()
@@ -114,28 +114,54 @@ BEGIN
   ORDER BY Shows.title;
 END//
 
-CREATE PROCEDURE titles_by_genre()
+CREATE PROCEDURE titles_by_genre(IN in_genre VARCHAR(50))
 BEGIN
   SELECT 
-    Genre.genre_name AS genres, 
-    GROUP_CONCAT(DISTINCT Shows.title ORDER BY Shows.title SEPARATOR ', ') AS titles
+    Genre.genre_name AS genre,
+    Shows.title AS title,
+    Duration.duration_time AS duration,
+    DurationUnit.unit_name AS unit,
+    Shows.show_description AS description
   FROM Shows 
   NATURAL JOIN ListedIn
   NATURAL JOIN Genre 
-  GROUP BY Genre.genre_name
-  ORDER BY Genre.genre_name;
+  NATURAL JOIN Duration
+  NATURAL JOIN DurationUnit
+  WHERE Genre.genre_name=in_genre
+  ORDER BY Shows.title;
 END//
 
-CREATE PROCEDURE titles_by_country()
+CREATE PROCEDURE titles_by_country(IN in_country VARCHAR(50))
 BEGIN
   SELECT 
-    Country.country_name AS countries,
-    GROUP_CONCAT(DISTINCT Shows.title ORDER BY Shows.title SEPARATOR ', ') AS titles
+    Country.country_name AS country,
+    Shows.title AS title,
+    Duration.duration_time AS duration,
+    DurationUnit.unit_name AS unit,
+    Shows.show_description AS description
   FROM Shows 
   NATURAL JOIN StreamingOn
   NATURAL JOIN Country
-  GROUP BY Country.country_name
-  ORDER BY Country.country_name;
+  NATURAL JOIN Duration
+  NATURAL JOIN DurationUnit
+  WHERE Country.country_name=in_country
+  ORDER BY Shows.title;
+END//
+-- OPERAÇÕES PARA UMA DETERMINADA DURAÇÃO
+
+CREATE PROCEDURE show_within_restrictions(IN in_category_type VARCHAR(50), IN in_min_time INT, IN in_max_time INT)
+BEGIN
+  SELECT DISTINCT
+    shows.title AS title,
+    duration.duration_time AS duration,
+    durationUnit.unit_name AS unit,
+    shows.show_description AS description
+  FROM shows
+  NATURAL JOIN duration
+  NATURAL JOIN durationunit
+  NATURAL JOIN category
+  WHERE duration.duration_time BETWEEN in_min_time AND in_max_time AND category.category_type = in_category_type
+  ORDER BY duration.duration_time DESC;
 END//
 
 CREATE PROCEDURE titles_yearly_count(IN category_type VARCHAR(10))

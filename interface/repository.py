@@ -77,17 +77,49 @@ def call_titles_all() -> list[dict]:
         } for row in result.mappings()
     ]
 
-def call_titles_by_genre() -> list[dict]:
-    result: Table = db.session.execute(
-        text("CALL titles_by_genre()")
+def call_titles_by_genre(genre: str) -> list[dict]:
+    result = db.session.execute(
+        text("CALL titles_by_genre(:in_genre)"),
+        {"in_genre": genre}
     )
-    return [{ "genre": row["genres"], "titles": row["titles"] } for row in result.mappings()]
+    return [
+        {
+            "title": row["title"],
+            "duration": f"{row['duration']} {row['unit']}",
+            "description": row["description"],
+        }
+        for row in result.mappings()
+    ]
+def call_titles_by_country(country: str) -> list[dict]:
+    result = db.session.execute(
+        text("CALL titles_by_country(:in_country)"),{"in_country":country}
+    )
+    return [
+        {
+            "title": row["title"],
+            "duration": f"{row['duration']} {row['unit']}",
+            "description": row["description"],
+        }
+        for row in result.mappings()
+    ]
 
-def call_titles_by_countries() -> list[dict]:
-    result: Table = db.session.execute(
-        text("CALL titles_by_country()")
+def call_show_within_restrictions(category_type,min_time,max_time)-> list[dict]:
+    result = db.session.execute(
+        text("CALL show_within_restrictions(:in_category_type, :in_min_time, :in_max_time)"),
+        {
+            "in_category_type":category_type,
+            "in_min_time":min_time,
+            "in_max_time":max_time
+        }
     )
-    return [{ "countries": row["countries"], "titles": row["titles"] } for row in result.mappings()]
+    return [
+        {
+            "title": row["title"],
+            "duration": f"{row['duration']} {row['unit']}",
+            "description": row["description"],
+        }
+        for row in result.mappings()
+    ]
 
 def call_top_actor_by_genre() -> list[dict]:
     result: Table = db.session.execute(

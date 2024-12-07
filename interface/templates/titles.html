@@ -4,17 +4,21 @@
 <a href="/" class="btn">
   <button type="button">Go Back</button>
 </a>
+
 <div class="filter-section">
   <form action="/titles" method="get" class="filter-form">
-    <label for="category" class="form-label">Choose category:</label>
+    <input type="hidden" name="val" value="filter" />
+    
+    <td for="category" class="form-label">Choose category:</td>
     <select name="category" id="category" class="form-select">
+      <option value="All">Show All</option>
       <option value="Movie">Movie</option>
-      <option value="TV Series">TV Series</option>
+      <option value="TV Show">TV Show</option>
     </select>
 
     <input 
       type="number" 
-      name="min_duration" 
+      name="min_time" 
       id="min_duration" 
       placeholder="Min duration (minutes)" 
       class="form-input" 
@@ -22,14 +26,14 @@
     />
     <input 
       type="number" 
-      name="max_duration" 
+      name="max_time" 
       id="max_duration" 
       placeholder="Max duration (minutes)" 
       class="form-input" 
       min="0" 
     />
 
-    <a href="" class="btn"><button>Apply Filter</button></a>
+    <a class="btn"><button type="submit">Apply Filter</button><a>
   </form>
 </div>
 
@@ -50,7 +54,7 @@
         <td>{{ item["description"] }}</td>
       </tr>
       {% endfor %}
-    {% else %}  
+    {% else %}
     <tr>
       <td colspan="3">No titles found.</td>
     </tr>
@@ -67,7 +71,7 @@
     if (category === "Movie") {
       minInput.placeholder = "Min duration (minutes)";
       maxInput.placeholder = "Max duration (minutes)";
-    } else if (category === "TV Series") {
+    } else if (category === "TV Show") {
       minInput.placeholder = "Min duration (seasons)";
       maxInput.placeholder = "Max duration (seasons)";
     }
