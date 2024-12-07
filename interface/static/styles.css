@@ -18,7 +18,7 @@
 }
 
 .btn button:hover {
-  background-color: darkblue;
+  background-color: #0b5546;
 
 }
 .back_btn{
@@ -95,6 +95,32 @@ img {
   border: 1px solid #ddd;
   border-radius: 5px;
   margin-right: 10px;
+}
+
+.filter-section {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.filter-form {
+  display: flex;
+  align-items: center;
+  gap: 15px; 
+}
+
+.form-label {
+  font-size: 16px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.form-select,
+.form-input {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
 }
 
 

@@ -1,22 +1,80 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Show titles</h1>
+<a href="/" class="btn">
+  <button type="button">Go Back</button>
+</a>
+<div class="filter-section">
+  <form action="/titles" method="get" class="filter-form">
+    <label for="category" class="form-label">Choose category:</label>
+    <select name="category" id="category" class="form-select">
+      <option value="Movie">Movie</option>
+      <option value="TV Series">TV Series</option>
+    </select>
+
+    <input 
+      type="number" 
+      name="min_duration" 
+      id="min_duration" 
+      placeholder="Min duration (minutes)" 
+      class="form-input" 
+      min="0" 
+    />
+    <input 
+      type="number" 
+      name="max_duration" 
+      id="max_duration" 
+      placeholder="Max duration (minutes)" 
+      class="form-input" 
+      min="0" 
+    />
+
+    <button type="submit" class="btn">Apply Filter</button>
+  </form>
+</div>
+
 <table class="styled-table">
-  <tr>
-    <th><b>Name</b></th>
-  </tr>
-  {% if titles %}
-    {% for title in titles %}
+  <thead>
     <tr>
-        <td>
-          <a href="" class="no-style-link">{{ title }}</a>
-        </td>
+      <th><b>Show Titles</b></th>
+      <th><b>Duration</b></th>
+      <th><b>Unit</b></th>
+      <th><b>Description</b></th>
     </tr>
-    {% endfor %}
-  {% else %}
-  <p>No titles found.</p>
-  {% endif %}
-  
+  </thead>
+  <tbody>
+    {% if titles %}
+      {% for item in titles %}
+      <tr>
+        <td><a href="#" class="no-style-link">{{ item.title }}</a></td>
+        <td>{{ item.duration }}</td>
+        <td>{{ item.unit }}</td>
+        <td>{{ item.description }}</td>
+      </tr>
+      {% endfor %}
+    {% else %}
+    <tr>
+      <td colspan="3">No titles found.</td>
+    </tr>
+    {% endif %}
+  </tbody>
 </table>
+
+<script>
+  function updatePlaceholders() {
+    const category = document.getElementById("category").value;
+    const minInput = document.getElementById("min_duration");
+    const maxInput = document.getElementById("max_duration");
+
+    if (category === "Movie") {
+      minInput.placeholder = "Min duration (minutes)";
+      maxInput.placeholder = "Max duration (minutes)";
+    } else if (category === "TV Series") {
+      minInput.placeholder = "Min duration (seasons)";
+      maxInput.placeholder = "Max duration (seasons)";
+    }
+  }
+
+  document.getElementById("category").addEventListener("change", updatePlaceholders);
+</script>
 {% endblock %}
