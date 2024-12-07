@@ -151,6 +151,11 @@ BEGIN
   ORDER BY Shows.title;
 END//
 
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
 CREATE PROCEDURE titles_by_rating(IN in_rating VARCHAR(30))
 BEGIN
   SELECT DISTINCT
@@ -166,6 +171,10 @@ BEGIN
   ORDER BY Shows.title;
 END//
 
+<<<<<<< Updated upstream
+=======
+>>>>>>> 9c3b01fb440da89c5fcc9af1a38a28480f4dae6d
+>>>>>>> Stashed changes
 -- OPERAÇÕES PARA UMA DETERMINADA DURAÇÃO
 
 CREATE PROCEDURE show_within_restrictions(IN in_category_type VARCHAR(50), IN in_min_time INT, IN in_max_time INT)
@@ -184,6 +193,18 @@ BEGIN
   ORDER BY Duration.duration_time DESC;
 END//
 
+CREATE PROCEDURE show_within_decade(IN in_min_year INT, IN in_max_year INT)
+BEGIN
+  SELECT 
+    Shows.title AS title,
+    Shows.rating AS rating,
+    Shows.release_date AS date,
+    Shows.show_description AS description
+  FROM Shows
+  WHERE Shows.release_year BETWEEN in_min_year AND in_max_year
+  ORDER BY Shows.release_year DESC;
+END//
+
 CREATE PROCEDURE titles_yearly_count(IN category_type VARCHAR(10))
 BEGIN
   SELECT Shows.release_year, COUNT(*) AS show_count
@@ -193,6 +214,21 @@ BEGIN
   WHERE (category_type IS NULL OR Category.category_type = category_type)
   GROUP BY Shows.release_year
   ORDER BY show_count DESC;
+END//
+
+-- PERCENTAGENS
+
+CREATE PROCEDURE genre_percentage()
+BEGIN
+  SELECT 
+    genre.genre_name AS genre,
+    COUNT(Shows.title) AS number_of_movies,
+    ROUND((COUNT(Shows.title) * 100.0 / (SELECT COUNT(*) FROM Shows)), 2) AS percentage
+  FROM Shows
+  NATURAL JOIN listedin
+  NATURAL JOIN genre
+  GROUP BY genre.genre_name
+  ORDER BY percentage DESC;
 END//
 
 CREATE PROCEDURE titles_top10_by_genre(IN category_type VARCHAR(10))
