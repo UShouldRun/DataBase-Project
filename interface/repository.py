@@ -36,8 +36,11 @@ def call_show_all_titles() -> [dict]:
                 NATURAL JOIN DurationUnit du
                 ORDER BY title, d.duration_time""")
     )
-    return [{"title": row["title"], "duration": row["duration"],"unit": row["unit"], "description": row["description"]} for row in result.mappings()]
-
+    return [{
+        "title": row["title"],
+        "duration": f"{row['duration']} {row['unit']}", 
+        "description": row["description"]
+    } for row in result.mappings()]
 
 def call_show_all_shows_by_country() -> list[dict]:
     result = db.session.execute(

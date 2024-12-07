@@ -29,7 +29,7 @@
       min="0" 
     />
 
-    <button type="submit" class="btn">Apply Filter</button>
+    <a href=""  class="btn"><button>Apply Filter</button></a>
   </form>
 </div>
 
@@ -38,7 +38,6 @@
     <tr>
       <th><b>Show Titles</b></th>
       <th><b>Duration</b></th>
-      <th><b>Unit</b></th>
       <th><b>Description</b></th>
     </tr>
   </thead>
@@ -47,12 +46,11 @@
       {% for item in titles %}
       <tr>
         <td><a href="#" class="no-style-link">{{ item.title }}</a></td>
-        <td>{{ item.duration }}</td>
-        <td>{{ item.unit }}</td>
+        <td>{{ item.duration}}</td>
         <td>{{ item.description }}</td>
       </tr>
       {% endfor %}
-    {% else %}
+    {% else %}  
     <tr>
       <td colspan="3">No titles found.</td>
     </tr>
