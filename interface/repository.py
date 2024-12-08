@@ -6,8 +6,8 @@ Table = Result
 
 # Data Insert Procedure Calls
 
-def call_create_show(title: str, release_year: int, date_added: str, rating: str, description: str) -> int:
-    show_id: int | None = call_exists_show(title, release_year, date_added, rating, description)
+def call_create_show(title: str, release_year: int, date_added: str, rating_id: int, description: str) -> int:
+    show_id: int | None = call_exists_show(title, release_year, date_added, rating_id, description)
     if not show_id:
         db.session.execute(
             text(
@@ -16,7 +16,7 @@ def call_create_show(title: str, release_year: int, date_added: str, rating: str
                         :title,
                         :release_year,
                         :release_date,
-                        :rating,
+                        :rating_id,
                         :show_description,
                         @show_id
                      )
@@ -26,7 +26,7 @@ def call_create_show(title: str, release_year: int, date_added: str, rating: str
                 'title':            title,
                 'release_year':     release_year,
                 'release_date':     date_added,
-                'rating':           rating,
+                'rating_id':        rating_id,
                 'show_description': description 
             }
         )
@@ -43,7 +43,7 @@ def call_exists_show(title: str, release_year: int, date_added: str, rating: str
             WHERE Shows.title = :title
             AND Shows.release_year = :release_year
             AND Shows.release_date = :release_date
-            AND Shows.rating = :rating
+            AND Shows.rating_id = :rating
             AND Shows.show_description = :show_description
             ;
             """
@@ -61,35 +61,52 @@ def call_exists_show(title: str, release_year: int, date_added: str, rating: str
 def call_get_current_show_id() -> int:
     return db.session.execute(text("""SELECT @show_id""")).fetchone()[0]
 
+def call_create_rating(rating: str) -> int:
+    rating_id: int | None = call_exists_rating(rating)
+    if not rating_id:
+        db.session.execute(
+            text(
+                """CALL create_rating(:rating_type, @genre_id)"""),
+            {
+                'rating_type': rating
+            }
+        )
+        return call_get_current_rating_id()
+    return rating_id
+
+def call_exists_rating(rating: str) -> int | None:
+    result: Table = db.session.execute(
+        text("""SELECT rating_id 
+            FROM Rating 
+            WHERE Rating.rating_type = :rating"""),
+        {
+            'rating': rating
+        }
+    ).fetchone()
+    return result[0] if result is not None else None
+
+def call_get_current_rating_id() -> int:
+    return db.session.execute(text("""SELECT @genre_id""")).fetchone()[0]
+
 def call_create_genre(genre: str) -> int:
     genre_id: int | None = call_exists_genre(genre)
     if not genre_id:
         db.session.execute(
             text(
-                """
-                CALL create_genre(
-                        :genre_name,
-                        @genre_id
-                     )
-                """
-            ),
+                """CALL create_genre(:genre_name,@genre_id)"""),
             {
                 'genre_name': genre
             }
         )
         return call_get_current_genre_id()
+    
     return genre_id
 
 def call_exists_genre(genre: str) -> int | None:
     result: Table = db.session.execute(
-        text(
-            """
-            SELECT
-                genre_id
+        text("""SELECT genre_id 
             FROM Genre
-            WHERE Genre.genre_name = :genre
-            """
-        ),
+            WHERE Genre.genre_name = :genre"""),
         {
             'genre': genre
         }
@@ -98,6 +115,7 @@ def call_exists_genre(genre: str) -> int | None:
 
 def call_get_current_genre_id() -> int:
     return db.session.execute(text("""SELECT @genre_id""")).fetchone()[0]
+
 
 def call_create_listed_in(show_id: int, genre_id: int) -> None:
     db.session.execute(
@@ -389,13 +407,14 @@ def call_titles_all() -> list[dict]:
             """
             SELECT DISTINCT
                 Shows.title AS title,
-                Shows.rating As rating,
+	            Rating.rating_type AS rating,
                 Duration.duration_time AS duration,
                 DurationUnit.unit_name as unit,
                 Shows.show_description AS description
             FROM Shows
             NATURAL JOIN Duration
             NATURAL JOIN DurationUnit
+            NATURAL JOIN Rating
             ORDER BY title, duration
             """
         )
@@ -419,8 +438,8 @@ def call_titles_by_genre(genre: str) -> list[dict]:
     return [
         {
             "title":       row["title"],
-            "rating":      row["rating"],
             "duration": f"{row['duration']} {row['unit']}",
+            "rating":      row["rating"],
             "description": row["description"],
         }
         for row in result.mappings()
@@ -435,8 +454,8 @@ def call_titles_by_country(country: str) -> list[dict]:
     return [
         {
             "title":       row["title"],
-            "rating":      row["rating"],
             "duration": f"{row['duration']} {row['unit']}",
+            "rating":      row["rating"],
             "description": row["description"],
         }
         for row in result.mappings()
@@ -446,16 +465,24 @@ def call_titles_by_rating(rating: str) -> list[dict]:
     result: Table = db.session.execute(
         text("CALL titles_by_rating(:in_rating)"),
         {
-            "title":       row["title"],
-            "rating":      row["rating"],
-            "duration": f"{row['duration']} {row['unit']}",
-            "description": row["description"],
+            "in_rating":rating
         }
     )
     return [
-
+        {
+            "title":       row["title"],
+            "duration": f"{row['duration']} {row['unit']}",
+            "rating":      row["rating"],
+            "description": row["description"],
+        }
+        for row in result.mappings()
     ]
 
+def call_ratings_all() -> list[str]:
+    result: Table = db.session.execute(
+        text("CALL ratings_all()")
+    )
+    return [row["ratings"] for row in result.mappings()]
 def call_show_within_restrictions(category_type,min_time,max_time)-> list[dict]:
     result: Table = db.session.execute(
         text(

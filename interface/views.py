@@ -72,22 +72,28 @@ def show_titles():
             titles = call_titles_by_country(country)
     elif val == "filter":
         category_type = request.args.get("category")
-        if category_type=="All":
-                return render_template(
-                "titles.html",
-                titles = call_titles_all()
-            )
         min_time = request.args.get("min_time")
         max_time = request.args.get("max_time")
+        rating = request.args.get("rating")
 
         min_time = int(min_time) if min_time and min_time.isdigit() else 0
         max_time = int(max_time) if max_time and max_time.isdigit() else 99999
 
-        titles = call_show_within_restrictions(category_type,min_time, max_time)
-    else:
-        titles = call_titles_all() 
+        if category_type == "All":
+            titles = call_titles_all()
+        else:
+            titles = call_show_within_restrictions(category_type, min_time, max_time)
 
+        if rating:
+            if rating == "Not":  # Handle "Not Rated" (i give up)
+                titles = [title for title in titles if title["rating"] == "Not Rated"]
+            else:
+                titles = [title for title in titles if title["rating"] == rating]
+    else:
+        titles = call_titles_all()
+        
     return render_template(
         "titles.html",
-        titles = titles
+        titles = titles,
+        ratings= call_ratings_all()
     )

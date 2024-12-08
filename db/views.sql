@@ -8,16 +8,21 @@ DROP PROCEDURE IF EXISTS genres_all;
 DROP PROCEDURE IF EXISTS genres;
 DROP PROCEDURE IF EXISTS countries_all;
 DROP PROCEDURE IF EXISTS countries;
+DROP PROCEDURE IF EXISTS ratings_all;
 DROP PROCEDURE IF EXISTS titles_by_director;
 DROP PROCEDURE IF EXISTS titles_by_actor;
 DROP PROCEDURE IF EXISTS titles_by_country;
 DROP PROCEDURE IF EXISTS titles_by_genre;
+-- not yet implemented
 DROP PROCEDURE IF EXISTS titles_by_rating;
 DROP PROCEDURE IF EXISTS titles_yearly_count;
 DROP PROCEDURE IF EXISTS titles_top10_by_genre;
 DROP PROCEDURE IF EXISTS top_actor_by_genre;
 DROP PROCEDURE IF EXISTS top_actor;
 DROP PROCEDURE IF EXISTS show_within_restrictions;
+DROP PROCEDURE IF EXISTS show_within_decade;
+DROP PROCEDURE IF EXISTS genre_percentage;
+
 DELIMITER //
 
 CREATE PROCEDURE actors_all()
@@ -84,6 +89,12 @@ BEGIN
   ORDER BY country_name;
 END//
 
+CREATE PROCEDURE ratings_all()
+BEGIN 
+	SELECT rating_type AS ratings
+	FROM Rating;
+END//
+
 CREATE PROCEDURE countries(IN in_title VARCHAR(100))
 BEGIN
 	SELECT Country.country_name AS countries
@@ -120,7 +131,7 @@ BEGIN
   SELECT DISTINCT
     Genre.genre_name AS genre,
     Shows.title AS title,
-    Shows.rating AS rating,
+    Rating.rating_type AS rating,
     Duration.duration_time AS duration,
     DurationUnit.unit_name AS unit,
     Shows.show_description AS description
@@ -129,6 +140,7 @@ BEGIN
   NATURAL JOIN Genre 
   NATURAL JOIN Duration
   NATURAL JOIN DurationUnit
+  NATURAL JOIN Rating
   WHERE Genre.genre_name = in_genre
   ORDER BY Shows.title;
 END//
@@ -138,7 +150,7 @@ BEGIN
   SELECT DISTINCT
     Country.country_name AS country,
     Shows.title AS title,
-    Shows.rating AS rating,
+    Rating.rating_type AS rating,
     Duration.duration_time AS duration,
     DurationUnit.unit_name AS unit,
     Shows.show_description AS description
@@ -147,41 +159,35 @@ BEGIN
   NATURAL JOIN Country
   NATURAL JOIN Duration
   NATURAL JOIN DurationUnit
+  NATURAL JOIN Rating
   WHERE Country.country_name = in_country
   ORDER BY Shows.title;
 END//
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-=======
->>>>>>> Stashed changes
+
 CREATE PROCEDURE titles_by_rating(IN in_rating VARCHAR(30))
 BEGIN
   SELECT DISTINCT
     Shows.title AS title,
-    Shows.rating AS rating,
+	Rating.rating_type AS rating,
     Duration.duration_time AS duration,
     DurationUnit.unit_name AS unit,
     Shows.show_description AS description
   FROM Shows 
   NATURAL JOIN Duration
   NATURAL JOIN DurationUnit
+  NATURAL JOIN Rating
   WHERE Shows.rating = in_rating
   ORDER BY Shows.title;
 END//
 
-<<<<<<< Updated upstream
-=======
->>>>>>> 9c3b01fb440da89c5fcc9af1a38a28480f4dae6d
->>>>>>> Stashed changes
 -- OPERAÇÕES PARA UMA DETERMINADA DURAÇÃO
 
 CREATE PROCEDURE show_within_restrictions(IN in_category_type VARCHAR(50), IN in_min_time INT, IN in_max_time INT)
 BEGIN
   SELECT DISTINCT
     Shows.title AS title,
-    Shows.rating AS rating,
+    Rating.rating_type AS rating,
     Duration.duration_time AS duration,
     DurationUnit.unit_name AS unit,
     Shows.show_description AS description
@@ -189,6 +195,7 @@ BEGIN
   NATURAL JOIN Duration
   NATURAL JOIN DurationUnit
   NATURAL JOIN Category
+  NATURAL JOIN Rating
   WHERE Duration.duration_time BETWEEN in_min_time AND in_max_time AND Category.category_type = in_category_type
   ORDER BY Duration.duration_time DESC;
 END//

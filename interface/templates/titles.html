@@ -15,6 +15,15 @@
       <option value="Movie">Movie</option>
       <option value="TV Show">TV Show</option>
     </select>
+    <select name="rating" id="rating" class="form-select">
+      {% if ratings %}
+        {% for rating in ratings %}
+          <option value="{{rating}}">{{rating}}</option>
+        {% endfor %}
+      {% else %}
+      <option value="">No ratings available</option>
+      {% endif %}
+    </select> 
 
     <input 
       type="number" 
@@ -42,6 +51,7 @@
     <tr>
       <th><b>Show Titles</b></th>
       <th><b>Duration</b></th>
+      <th><b>Rating</b></th>
       <th><b>Description</b></th>
     </tr>
   </thead>
@@ -51,6 +61,7 @@
       <tr>
         <td><a href="#" class="no-style-link">{{ item["title"] }}</a></td>
         <td>{{ item["duration"] }}</td>
+        <td>{{ item["rating"] }}</td>
         <td>{{ item["description"] }}</td>
       </tr>
       {% endfor %}

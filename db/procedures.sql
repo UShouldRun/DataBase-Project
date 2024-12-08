@@ -1,15 +1,27 @@
+DROP PROCEDURE IF EXISTS create_show;
+DROP PROCEDURE IF EXISTS create_rating;
+
 DELIMITER //
 
 CREATE PROCEDURE create_show(
   IN in_title VARCHAR(100),
   IN in_release_year INT,
   IN in_release_date DATE,
-  IN in_rating VARCHAR(30),
+  IN in_rating_id VARCHAR(30),
   IN in_show_description VARCHAR(500),
   OUT _id INT 
 ) BEGIN  
-  INSERT INTO Shows (title, release_year, release_date , rating, show_description) 
-  VALUES (in_title, in_release_year, in_release_date, in_rating, in_show_description);
+  INSERT INTO Shows (title, release_year, release_date , rating_id, show_description) 
+  VALUES (in_title, in_release_year, in_release_date, in_rating_id, in_show_description);
+  SET _id = LAST_INSERT_id();
+END//
+
+CREATE PROCEDURE create_rating(
+  IN in_rating_type VARCHAR(50),
+  OUT _id INT
+) BEGIN
+  INSERT INTO Rating (rating_type)
+  VALUES (in_rating_type);
   SET _id = LAST_INSERT_id();
 END//
 

@@ -1,3 +1,4 @@
+from pymysql import OperationalError
 from config import db, Flask, SQLAlchemy
 
 from sqlalchemy import text
@@ -47,7 +48,7 @@ def preprocess_dataset(data: pd.DataFrame):
 
             # Fill missing date fields with None (interpreted as NULL in SQL)
             data['date_added'] = data['date_added'].fillna(pd.NaT).replace({pd.NaT: None})
-            # Porque os anos no dataset veem como 2,016 em vez de 2016
+
             data['release_year'] = data['release_year'].fillna(0).astype(int) 
 
             return data
@@ -63,11 +64,14 @@ def populate_database(app: Flask, db: SQLAlchemy):
             data = preprocess_dataset(pd.read_excel(file_path))
 
             for _, row in data.iterrows():
+
+                rating = row["rating"]
+
                 show_id: int = repo.call_create_show(
                     row['title'],
                     int(row['release_year']),
                     row['date_added'],
-                    row['rating'],
+                    repo.call_create_rating(rating),
                     row['description']
                 )
 

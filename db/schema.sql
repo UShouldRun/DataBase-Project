@@ -1,13 +1,19 @@
 CREATE DATABASE IF NOT EXISTS DisneyDB;
 USE DisneyDB;
 
+CREATE TABLE IF NOT EXISTS Rating (
+  rating_id   INT AUTO_INCREMENT PRIMARY KEY,
+  rating_type VARCHAR(50) NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS Shows (
   show_id          INT AUTO_INCREMENT PRIMARY KEY,
   title            VARCHAR(100) NOT NULL,
   release_year     INT NOT NULL,	
   release_date     DATE,
-  rating           VARCHAR(30),
-  show_description VARCHAR(500) NOT NULL
+  rating_id        INT,
+  show_description VARCHAR(500) NOT NULL,
+  FOREIGN KEY (rating_id)   REFERENCES Rating(rating_id)
 );
 
 CREATE TABLE IF NOT EXISTS Person (
