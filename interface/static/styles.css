@@ -170,3 +170,15 @@ canvas {
   margin: 0 auto;
 }
 
+.button-container {
+  display: flex;
+  gap: 20px; 
+  margin-bottom: 20px; 
+}
+
+.button-container form {
+  margin: 0; 
+}
+.center {
+  text-align: center;
+}

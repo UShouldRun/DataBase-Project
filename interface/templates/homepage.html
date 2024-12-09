@@ -3,63 +3,63 @@
 {% block content %}
 <img src="{{ url_for('static', filename='assets/db.png') }}" alt="Database Image" class="resized-image">
 
-<p class="informative_msg">Click on the buttons to view information about the database:</p>
+<p class="informative_msg">Click on the buttons to show detailed informations about the database</p>
 
 <table class="styled-table">
     <thead>
       <tr>
-        <th>Question</th>
-        <th>Answer</th>
+        <th>Description</th>
+        <th>Search</th>
       </tr>
     </thead>
     <tbody>
         <tr>
-            <td>Seleciona os titulos dos filmes</td>
+            <td>Select all the shows</td>
             <td class="butt">
-                <a href="/titles" class="btn"><button >View Titles</button></a>
+                <a href="/titles" class="btn"><button >Show films</button></a>
             </td>
         </tr>
         <tr>
-            <td>Seleciona o nome dos atores de um filme</td>
+            <td>Select the name of the actors of a film or show all the actors (if no input is given)</td>
             <td class="butt">
                 <form action="/actors" method="get" class="genre-form">
                     <input type="text" name="title" placeholder="Enter a show title" />
-                    <a class="btn"><button type="submit">View Actors</button></a>
+                    <a class="btn"><button type="submit">Show actors</button></a>
                 </form>
             </td>
         </tr>
         <tr>
-            <td>Seleciona o nome dos diretores de um filme</td>
+            <td>Select the name of the directors of a film or show all the directors (if no input is given)</td>
             <td class="butt">
                 <form action="/directors" method="get" class="genre-form">
                     <input type="text" name="title" placeholder="Enter a show title" />
-                    <a class="btn"><button type="submit">View Directors</button></a>
+                    <a class="btn"><button type="submit">Show directors</button></a>
                 </form>
             </td>
         </tr>
         <tr>
-            <td>Seleciona todos os genres ou os genres de um filme</td>
+            <td>Select all the genres of a film or show all the genres (if no input is given)</td>
             <td class="butt">
                 <form action="/genres" method="get" class="genre-form">
                     <input type="text" name="title" placeholder="Enter a show title" />
-                    <a class="btn"><button type="submit">Search Genres</button></a>
+                    <a class="btn"><button type="submit">Show genres</button></a>
                 </form>
             </td>
         </tr>
         <tr>
-            <td>Seleciona todas as countries de um filme</td>
+            <td>Select the countries where a film is available or show all of the countries (if no input is given)</td>
             <td class="butt">
                 <form action="/countries" method="get" class="genre-form">
                     <input type="text" name="title" placeholder="Enter a show title" />
-                    <a class="btn"><button type="submit">Search Countries</button></a>
+                    <a class="btn"><button type="submit">Show countries</button></a>
                 </form>
             </td>
         </tr>
         <tr>
-            <td>View year statistics</td>
+            <td>Show how many shows where released per year</td>
             <td class="butt">
                 <a href="/year_statistics" class="btn">
-                    <button type="button">Go Back</button>
+                    <button type="button">Show statistics</button>
                   </a>
             </td>
         </tr>
@@ -67,6 +67,6 @@
 
 
 <a href="/shows" class="btn">
-    <button type="button">View dataset</button>
+    <button type="button">Show complete dataset</button>
 </a>
 {% endblock %}

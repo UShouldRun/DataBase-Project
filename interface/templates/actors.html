@@ -3,7 +3,7 @@
 {% block content %}
 <h1>Actors</h1>
 <form action="/actors" method="get">
-  <a class="btn"><button type="submit" name="filter" value="true">Order by Appearances</button></a>
+  <a class="btn"><button type="submit" name="filter" value="true">Order by film appearances</button></a>
 </form>
 <table class="styled-table">
   <tr>
@@ -15,7 +15,7 @@
   
   {% for actor in actors %}
   <tr>
-    <td><a href="/actors/{{ actor['name'] }}" class="no-style-link">{{ actor['name'] }}</a></td>
+    <td><a>{{ actor['name'] }}</a></td>
     {% if actor.get("appearances") is not none %}
     <td>{{ actor['appearances'] }}</td>
     {% endif %}

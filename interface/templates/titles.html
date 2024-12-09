@@ -1,9 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<a href="/" class="btn">
-  <button type="button">Go Back</button>
-</a>
+
 <div class="search-container">
   <form action="/search_titles" method="get">
     <input 
@@ -25,6 +23,7 @@
       <option value="Movie">Movie</option>
       <option value="TV Show">TV Show</option>
     </select>
+    <td for="category" class="form-label">Choose type:</td>
     <select name="rating" id="rating" class="form-select">
       {% if ratings %}
         <option value="All">No Filter</option>
@@ -70,7 +69,7 @@
     {% if titles %}
       {% for item in titles %}
       <tr>
-        <td><a href="#" class="no-style-link">{{ item["title"] }}</a></td>
+        <td><a>{{ item["title"] }}</a></td>
         <td>{{ item["duration"] }}</td>
         <td>{{ item["rating"] }}</td>
         <td>{{ item["description"] }}</td>

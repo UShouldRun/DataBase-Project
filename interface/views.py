@@ -35,7 +35,6 @@ def show_all_directors():
 @app.route("/shows")
 def show_all_shows():
     shows = call_show_all_dataset()
-    print(shows)
     return render_template("shows.html", shows=shows)
 
 @app.route("/genres", methods=["GET"])

@@ -23,8 +23,7 @@ DROP PROCEDURE IF EXISTS genre_percentage;
 DROP PROCEDURE IF EXISTS country_percentage;
 DROP PROCEDURE IF EXISTS titles_by_letters;
 DROP PROCEDURE IF EXISTS titles_yearly_count;
--- not yet implemented
-DROP PROCEDURE IF EXISTS titles_top10_by_genre;
+
 
 DELIMITER // 
 
@@ -289,16 +288,6 @@ BEGIN
   ORDER BY country.country_name ASC;
 END//
 
-CREATE PROCEDURE titles_top10_by_genre(IN category_type VARCHAR(10))
-BEGIN
-  SELECT Shows.title
-  FROM genres_count
-  NATURAL JOIN Shows
-  NATURAL JOIN Duration
-  NATURAL JOIN Category
-  WHERE category_type IS NULL OR Category.category_type = category_type
-  LIMIT 10;
-END//
 
 CREATE PROCEDURE top_actor_by_genre()
 BEGIN
