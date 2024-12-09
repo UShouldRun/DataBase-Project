@@ -10,9 +10,18 @@ def homepage():
 @app.route("/actors", methods=["GET"])
 def show_all_actors():
     title = request.args.get("title")
+    filter_applied = request.args.get("filter")=="true"
+    actors=[]
+    if title:
+        actors = [{"name": actor} for actor in call_actors(title.strip())]
+    elif filter_applied:
+        actors=call_top_actors()
+    else:
+        actors = [{"name": actor} for actor in call_actors_all()]
+
     return render_template(
         "actors.html",
-        actors = call_actors(title.strip()) if title else call_actors_all()
+        actors =  actors
     )
 
 @app.route("/directors")
@@ -44,10 +53,23 @@ def show_all_shows():
 @app.route("/genres", methods=["GET"])
 def show_genres():
     title = request.args.get("title")
+
     return render_template(
         "genres.html",
         genres = call_genres(title.strip()) if title else call_genres_all()
     )
+@app.route("/top_actors_by_genre", methods=["GET"])
+def top_actors_by_genre():
+    try:
+        top_actors = call_top_actor_by_genre()
+        return render_template(
+            "top_actors_by_genre.html",
+            actors_by_genre=top_actors
+        )
+    except Exception as e:
+        print(f"Error fetching top actors by genre: {e}")
+        return "An error occurred.", 500
+
 
 @app.route("/countries", methods=["GET"])
 def show_countries():

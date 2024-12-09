@@ -2,14 +2,23 @@
 
 {% block content %}
 <h1>Actors</h1>
+<form action="/actors" method="get">
+  <a class="btn"><button type="submit" name="filter" value="true">Order by Appearances</button></a>
+</form>
 <table class="styled-table">
   <tr>
     <th><b>Name</b></th>
+    {% if actors and actors[0].get("appearances") is not none %}
+    <th><b>Appearances</b></th>
+    {% endif %}
   </tr>
   
   {% for actor in actors %}
   <tr>
-    <td><a href="/actors/{{ actor}}" class="no-style-link">{{ actor }}</a></td>
+    <td><a href="/actors/{{ actor['name'] }}" class="no-style-link">{{ actor['name'] }}</a></td>
+    {% if actor.get("appearances") is not none %}
+    <td>{{ actor['appearances'] }}</td>
+    {% endif %}
   </tr>
   {% endfor %}
   

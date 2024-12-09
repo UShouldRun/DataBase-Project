@@ -13,13 +13,13 @@ DROP PROCEDURE IF EXISTS titles_by_director;
 DROP PROCEDURE IF EXISTS titles_by_actor;
 DROP PROCEDURE IF EXISTS titles_by_country;
 DROP PROCEDURE IF EXISTS titles_by_genre;
--- not yet implemented
 DROP PROCEDURE IF EXISTS titles_by_rating;
+DROP PROCEDURE IF EXISTS show_within_restrictions;
+DROP PROCEDURE IF EXISTS top_actors;
+-- not yet implemented
 DROP PROCEDURE IF EXISTS titles_yearly_count;
 DROP PROCEDURE IF EXISTS titles_top10_by_genre;
 DROP PROCEDURE IF EXISTS top_actor_by_genre;
-DROP PROCEDURE IF EXISTS top_actor;
-DROP PROCEDURE IF EXISTS show_within_restrictions;
 DROP PROCEDURE IF EXISTS show_within_decade;
 DROP PROCEDURE IF EXISTS genre_percentage;
 
@@ -177,7 +177,7 @@ BEGIN
   NATURAL JOIN Duration
   NATURAL JOIN DurationUnit
   NATURAL JOIN Rating
-  WHERE Shows.rating = in_rating
+  WHERE Rating.rating_type = in_rating
   ORDER BY Shows.title;
 END//
 
@@ -251,37 +251,34 @@ END//
 
 CREATE PROCEDURE top_actor_by_genre()
 BEGIN
-  SELECT 
-    Genre.genre_name,
-    Person.person_name AS actor,
-    pa.appearances
-  FROM Person
-  JOIN person_appearances_per_genre_per_role pa ON pa.person_id = Person.person_id
-  JOIN Genre ON Genre.genre_id = pa.genre_id
-  WHERE LOWER(pa.paper_role) = 'actor'
-     AND appearances = (
-       SELECT MAX(pa_inner.appearances)
-       FROM person_appearances_per_genre_per_role pa_inner
-       WHERE pa_inner.genre_id = Genre.genre_id
-     )
-  ORDER BY pa.appearances DESC, Genre.genre_name ASC
-  LIMIT 10;
+	WITH RankedActors AS (
+	  SELECT 
+		Genre.genre_name AS genre,
+		Person.person_name AS actor,
+		pa.appearances,
+		ROW_NUMBER() OVER (PARTITION BY pa.genre_id ORDER BY pa.appearances DESC) AS ranking
+	  FROM person_appearances_per_genre_per_role pa
+	  JOIN Person ON pa.person_id = Person.person_id
+	  JOIN Genre ON Genre.genre_id = pa.genre_id
+	  WHERE LOWER(pa.paper_role) = 'actor'
+	)
+	SELECT genre, actor, appearances
+	FROM RankedActors
+	WHERE ranking = 1
+	ORDER BY genre ASC;
 END//
 
-CREATE PROCEDURE top_actor()
+CREATE PROCEDURE top_actors()
 BEGIN
-  SELECT
-    Person.person_name AS actor,
-    actor_appearances.appearances
-  FROM Person
-  NATURAL JOIN actor_appearances
-  WHERE actor_appearances.appearances = (
-    SELECT MAX(a.appearances)
-    FROM actor_appearances a
-  )
-  GROUP BY actor_appearances.person_id
-  ORDER BY actor_appearances.appearances, Person.person_name
-  LIMIT 10;
+	SELECT
+	  Person.person_name AS actors,
+	  actor_appearances.appearances
+	FROM Person
+	JOIN actor_appearances ON Person.person_id = actor_appearances.person_id
+	JOIN Paper ON Person.person_id = Paper.person_id
+	WHERE Paper.paper_role = "actor"
+	GROUP BY Person.person_id
+	ORDER BY actor_appearances.appearances DESC, Person.person_name ASC;
 END//
 
 -- Views
@@ -301,12 +298,13 @@ ORDER BY genre_count DESC;
 
 CREATE OR REPLACE VIEW person_appearances AS
 SELECT 
-  person_id,
-  COUNT(*) AS appearances
+  person.person_id,
+  person.person_name,
+  COUNT(paper.show_id) AS appearances
 FROM Paper
-NATURAL JOIN Person
-GROUP BY person_id
-ORDER BY appearances DESC, person_id;
+JOIN Person ON Paper.person_id = Person.person_id
+GROUP BY person.person_id, person.person_name
+ORDER BY appearances DESC, person.person_id;
 
 CREATE OR REPLACE VIEW actor_appearances AS
 SELECT 

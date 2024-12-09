@@ -514,7 +514,26 @@ def call_top_actor_by_genre() -> list[dict]:
     result: Table = db.session.execute(
         text("""CALL top_actor_by_genre()""")
     )
-    return [row["countries"] for row in result.mappings()]
+    return [
+        {
+            "genre":       row["genre"],
+            "actor":       row["actor"],
+            "appearances": row["appearances"]
+        }
+        for row in result.mappings()
+    ]
+
+def call_top_actors() -> list[dict]:
+    result: Table = db.session.execute(
+        text("""CALL top_actors()""")
+    )
+    return [
+        {
+            "name":       row["actors"],
+            "appearances": row["appearances"]
+        }
+        for row in result.mappings()
+    ]
 
 def call_titles_top10_genre(category_type: str) -> list[str]:
     result: Table = db.session.execute(
@@ -531,8 +550,3 @@ def call_titles_top10_genre(category_type: str) -> list[str]:
     )
     return [row["title"] for row in result.mappings()]
 
-def call_top_actor_by_genre() -> list[dict]:
-    result: Table = db.session.execute(
-        text("""CALL top_actor_by_genre()""")
-    )
-    return [dict(row) for row in result.fetchall()]
