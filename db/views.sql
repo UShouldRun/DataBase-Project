@@ -1,5 +1,6 @@
 USE DisneyDB;
 
+DROP PROCEDURE IF EXISTS show_all_dataset;
 DROP PROCEDURE IF EXISTS actors_all;
 DROP PROCEDURE IF EXISTS actors;
 DROP PROCEDURE IF EXISTS directors_all;
@@ -24,18 +25,52 @@ DROP PROCEDURE IF EXISTS titles_by_letters;
 DROP PROCEDURE IF EXISTS titles_yearly_count;
 -- not yet implemented
 DROP PROCEDURE IF EXISTS titles_top10_by_genre;
-DROP PROCEDURE IF EXISTS show_within_decade;
 
+DELIMITER // 
 
-DELIMITER //
-
-CREATE PROCEDURE actors_all()
+CREATE PROCEDURE show_all_dataset()
 BEGIN 
-  SELECT DISTINCT Person.person_name AS actors
-  FROM Person
-  NATURAL JOIN Paper
-  WHERE LOWER(Paper.paper_role) = 'actor'
-  ORDER BY TRIM(Person.person_name);
+SELECT 
+    shows.title,
+    shows.release_year,
+    shows.release_date,
+    GROUP_CONCAT(DISTINCT actors.person_name ORDER BY actors.person_name) AS actors,
+    GROUP_CONCAT(DISTINCT directors.person_name ORDER BY directors.person_name) AS directors,
+    GROUP_CONCAT(DISTINCT genres.genre_name ORDER BY genres.genre_name) AS genres,
+    GROUP_CONCAT(DISTINCT countries.country_name ORDER BY countries.country_name) AS countries,
+    rating.rating_type AS rating,
+    MAX(duration.duration_time) AS duration_time, 
+    MAX(durationunit.unit_name) AS unit_name,  
+    MAX(category.category_type) AS type,
+    shows.show_description AS description
+FROM 
+    Shows AS shows
+LEFT JOIN 
+    Rating AS rating ON shows.rating_id = rating.rating_id
+LEFT JOIN 
+    Paper AS actors_paper ON shows.show_id = actors_paper.show_id AND actors_paper.paper_role = 'actor'
+LEFT JOIN 
+    Person AS actors ON actors_paper.person_id = actors.person_id
+LEFT JOIN 
+    Paper AS directors_paper ON shows.show_id = directors_paper.show_id AND directors_paper.paper_role = 'director'
+LEFT JOIN 
+    Person AS directors ON directors_paper.person_id = directors.person_id
+LEFT JOIN 
+    ListedIn AS listed_in ON shows.show_id = listed_in.show_id
+LEFT JOIN 
+    Genre AS genres ON listed_in.genre_id = genres.genre_id
+LEFT JOIN 
+    StreamingOn AS streaming_on ON shows.show_id = streaming_on.show_id
+LEFT JOIN 
+    Country AS countries ON streaming_on.country_id = countries.country_id
+LEFT JOIN 
+    Duration AS duration ON shows.show_id = duration.show_id
+NATURAL JOIN durationunit
+NATURAL JOIN category
+GROUP BY 
+    shows.show_id
+ORDER BY 
+    shows.release_year DESC;
 END//
 
 CREATE PROCEDURE actors(IN title VARCHAR(100))
@@ -48,6 +83,19 @@ BEGIN
   GROUP BY Person.person_name
   ORDER BY Person.person_name;
 END//
+
+
+
+CREATE PROCEDURE actors_all()
+BEGIN 
+  SELECT DISTINCT Person.person_name AS actors
+  FROM Person
+  NATURAL JOIN Paper
+  WHERE LOWER(Paper.paper_role) = 'actor'
+  ORDER BY TRIM(Person.person_name);
+END//
+
+
 
 CREATE PROCEDURE directors_all()
 BEGIN 
@@ -202,18 +250,6 @@ BEGIN
   NATURAL JOIN Rating
   WHERE Duration.duration_time BETWEEN in_min_time AND in_max_time AND Category.category_type = in_category_type
   ORDER BY Duration.duration_time DESC;
-END//
-
-CREATE PROCEDURE show_within_decade(IN in_min_year INT, IN in_max_year INT)
-BEGIN
-  SELECT 
-    Shows.title AS title,
-    Shows.rating AS rating,
-    Shows.release_date AS date,
-    Shows.show_description AS description
-  FROM Shows
-  WHERE Shows.release_year BETWEEN in_min_year AND in_max_year
-  ORDER BY Shows.release_year DESC;
 END//
 
 CREATE PROCEDURE titles_yearly_count()

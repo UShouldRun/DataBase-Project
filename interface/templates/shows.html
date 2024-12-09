@@ -4,16 +4,22 @@
 <a href="/" class="btn">
   <button type="button">Go Back</button>
 </a>
+
 <h1>Shows</h1>
+
 <table class="styled-table">
   <thead>
     <tr>
       <th>Type</th>
       <th>Title</th>
       <th>Director</th>
-      <th>Cast</th>
+      <th>Actors</th>
       <th>Country</th>
-      <th>Release Year</th>
+      <th>Date Added</th>
+      <th>Description</th>
+      <th>Rating</th>
+      <th>Duration</th>
+      <th>Listed in</th>
       <th>Description</th>
     </tr>
   </thead>
@@ -23,14 +29,19 @@
       <td>{{ s.type }}</td>
       <td>{{ s.title }}</td>
       <td>
-        <a href="/directors?title={{ s.title }}" class="no-style-link">{{ s.directors | join(', ') }}</a>
+          {{ s.directors | join(', ') }}
       </td>
       <td>
-        <a href="/actors?title={{ s.title }}" class="no-style-link">{{ s.cast | join(', ') }}</a>
+          {{ s.actors | join(', ') }}
+
       </td>
-      <td>{{ s.country | join(', ') }}</td>
-      <td>{{ s.release_year[0] }}</td>
-      <td>{{ s.description[0] }}</td>
+      <td>{{ s.countries | join(', ') }}</td>
+      <td>{{ s.release_date }}</td> 
+      <td>{{ s.release_year }}</td>
+      <td>{{ s.rating }}</td>
+      <td>{{ s.duration }}</td> 
+      <td>{{ s.genres | join(', ') }}</td>
+      <td>{{ s.description }}</td>
     </tr>
     {% endfor %}
   </tbody>

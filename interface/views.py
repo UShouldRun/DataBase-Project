@@ -34,20 +34,8 @@ def show_all_directors():
 
 @app.route("/shows")
 def show_all_shows():
-    shows = [
-        {
-            "type": "Movie",
-            "title": "As aventuras da cadeira de base de dados",
-            "directors": ["João", "Henrique"],
-            "cast": ["João", "Henrique", "Rossi", "Alex"],
-            "countries": ["Portugal"],
-            "release_year": [2024],
-            "rating": "TOP G",
-            "duration": "1 mês",
-            "listed_in": ["Comedy", "Dramatic"],
-            "description": ["4 jovens tentam desesperadamente acabar uma app para a faculdade"],
-        },
-    ]
+    shows = call_show_all_dataset()
+    print(shows)
     return render_template("shows.html", shows=shows)
 
 @app.route("/genres", methods=["GET"])

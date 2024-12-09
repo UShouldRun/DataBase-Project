@@ -618,3 +618,24 @@ def call_titles_yearly_count():
         }
         for row in result.mappings()
     ]
+def call_show_all_dataset():
+    result = db.session.execute(
+        text(""" CALL show_all_dataset() """)
+    )
+
+    return [
+        {
+            "title": row["title"],
+            "rating": row["rating"],
+            "actors": row["actors"].split(",") if row["actors"] else [],
+            "directors": row["directors"].split(",") if row["directors"] else [],
+            "genres": row["genres"].split(",") if row["genres"] else [],
+            "countries": row["countries"].split(",") if row["countries"] else [],
+            "release_year": row["release_year"],
+            "release_date": row["release_date"],
+            "duration": f"{row['duration_time']} {row['unit_name']}" if row['duration_time'] and row['unit_name'] else "N/A",
+            "type": row["type"],
+            "description": row["description"]
+
+        } for row in result.mappings()
+    ]
