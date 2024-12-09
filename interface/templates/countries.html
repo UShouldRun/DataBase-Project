@@ -2,6 +2,12 @@
 
 {% block content %}
 <h1>Countries</h1>
+<form action="/top_actors_by_country" method="get">
+  <a class="btn"><button type="submit" name="filter" value="true">See top actors</button></a>
+</form>
+<form action="/country_statistics" method="get">
+  <a class="btn"><button type="submit" name="filter" value="true">See country statistics</button></a>
+</form>
 <table class="styled-table">
   <tr>
     <th><b>Name</b></th>

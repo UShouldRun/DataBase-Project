@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Titles Released Over Time</h1>
+<div class="chart-container">
+    <canvas id="titlesChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const dataFromServer = JSON.parse('{{ data | tojson | safe }}');
+    
+    const years = dataFromServer.map(item => item.year);
+    const counts = dataFromServer.map(item => item.count);
+  
+    new Chart(document.getElementById('titlesChart'), {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [{
+          label: 'Titles Released',
+          data: counts,
+          borderColor: 'rgba(75, 192, 192, 1)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderWidth: 2,
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            title: { display: true, text: 'Year' },
+            ticks: {
+              autoSkip: true, 
+              maxTicksLimit: 10,
+              stepSize: 1,
+            }
+          },
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: 'Number of Titles' }
+          }
+        },
+        plugins: {
+          legend: { display: true, position: 'top' }
+        }
+      }
+    });
+</script>
+{% endblock %}

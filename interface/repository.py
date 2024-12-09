@@ -460,6 +460,18 @@ def call_titles_by_country(country: str) -> list[dict]:
         }
         for row in result.mappings()
     ]
+def call_top_actor_by_country() -> list[dict]:
+    result: Table = db.session.execute(
+        text("""CALL top_actor_by_country()""")
+    )
+    return [
+        {
+            "country":       row["country"],
+            "actor":       row["actor"],
+            "appearances": row["appearances"]
+        }
+        for row in result.mappings()
+    ]
 
 def call_titles_by_rating(rating: str) -> list[dict]:
     result: Table = db.session.execute(
@@ -522,6 +534,7 @@ def call_top_actor_by_genre() -> list[dict]:
         }
         for row in result.mappings()
     ]
+
 def call_genre_percentage() -> list[dict]:
     result: Table = db.session.execute(
         text("""CALL genre_percentage()""")
@@ -529,6 +542,18 @@ def call_genre_percentage() -> list[dict]:
     return [
         {
             "genre":       row["genre"],
+            "nr":       row["nr_of_titles"],
+            "percentage": row["percentage"]
+        }
+        for row in result.mappings()
+    ]
+def call_country_percentage() -> list[dict]:
+    result: Table = db.session.execute(
+        text("""CALL country_percentage()""")
+    )
+    return [
+        {
+            "country":       row["country"],
             "nr":       row["nr_of_titles"],
             "percentage": row["percentage"]
         }
@@ -543,7 +568,7 @@ def call_titles_by_letters(letters : str) -> list[dict]:
             "in_letters": letters
 
         }
-    )
+    ) 
     return [
         {
             "title":       row["title"],
@@ -580,3 +605,16 @@ def call_titles_top10_genre(category_type: str) -> list[str]:
     )
     return [row["title"] for row in result.mappings()]
 
+def call_titles_yearly_count():
+    result: Table = db.session.execute(
+    text(
+        """
+        CALL titles_yearly_count()""")
+)
+    return [
+        {
+            "year":       row["release_year"],
+            "count":      row["show_count"],
+        }
+        for row in result.mappings()
+    ]

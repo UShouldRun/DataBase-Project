@@ -70,6 +70,18 @@ def top_actors_by_genre():
         print(f"Error fetching top actors by genre: {e}")
         return "An error occurred.", 500
     
+@app.route("/top_actors_by_country", methods=["GET"])
+def top_actors_by_country():
+    try:
+        top_actors = call_top_actor_by_country()
+        return render_template(
+            "top_actors_by_country.html",
+            actors_by_country=top_actors
+        )
+    except Exception as e:
+        print(f"Error fetching top actors by genre: {e}")
+        return "An error occurred.", 500
+    
 @app.route("/genre_statistics", methods=["GET"])
 def genre_statistics():
     try:
@@ -77,6 +89,18 @@ def genre_statistics():
         return render_template(
             "genre_percentage.html",
             genres_n_percentages=genres_n_percentages
+        )
+    except Exception as e:
+        print(f"Error fetching top actors by genre: {e}")
+        return "An error occurred.", 500
+    
+@app.route("/country_statistics", methods=["GET"])
+def country_statistics():
+    try:
+        countries_n_percentages = call_country_percentage()
+        return render_template(
+            "country_percentage.html",
+            countries_n_percentages=countries_n_percentages
         )
     except Exception as e:
         print(f"Error fetching top actors by genre: {e}")
@@ -139,4 +163,11 @@ def search_titles():
         "titles.html",
         titles = titles,
         ratings= call_ratings_all()
+    )
+@app.route("/year_statistics", methods=["GET"])
+def titles_over_time():
+    data = call_titles_yearly_count() 
+    return render_template(
+        "year_statistics.html",
+        data = data,
     )

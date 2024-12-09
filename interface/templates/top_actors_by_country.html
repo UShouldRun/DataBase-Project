@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Top Actors by Country</h1>
+<table class="styled-table">
+  <thead>
+    <tr>
+      <th>Country</th>
+      <th>Actor</th>
+      <th>Appearances</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in actors_by_country %}
+    <tr>
+      <td>{{ item.country }}</td>
+      <td>{{ item.actor }}</td>
+      <td>{{ item.appearances }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

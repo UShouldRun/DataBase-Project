@@ -17,11 +17,12 @@ DROP PROCEDURE IF EXISTS titles_by_rating;
 DROP PROCEDURE IF EXISTS show_within_restrictions;
 DROP PROCEDURE IF EXISTS top_actors;
 DROP PROCEDURE IF EXISTS top_actor_by_genre;
+DROP PROCEDURE IF EXISTS top_actor_by_country;
 DROP PROCEDURE IF EXISTS genre_percentage;
+DROP PROCEDURE IF EXISTS country_percentage;
 DROP PROCEDURE IF EXISTS titles_by_letters;
-
--- not yet implemented
 DROP PROCEDURE IF EXISTS titles_yearly_count;
+-- not yet implemented
 DROP PROCEDURE IF EXISTS titles_top10_by_genre;
 DROP PROCEDURE IF EXISTS show_within_decade;
 
@@ -215,15 +216,14 @@ BEGIN
   ORDER BY Shows.release_year DESC;
 END//
 
-CREATE PROCEDURE titles_yearly_count(IN category_type VARCHAR(10))
+CREATE PROCEDURE titles_yearly_count()
 BEGIN
   SELECT Shows.release_year, COUNT(*) AS show_count
   FROM Shows
   NATURAL JOIN Duration
   NATURAL JOIN Category
-  WHERE (category_type IS NULL OR Category.category_type = category_type)
   GROUP BY Shows.release_year
-  ORDER BY show_count DESC;
+  ORDER BY Shows.release_year ASC;
 END//
 
 -- PERCENTAGENS
@@ -239,6 +239,18 @@ BEGIN
   NATURAL JOIN genre
   GROUP BY genre.genre_name
   ORDER BY genre.genre_name ASC;
+END//
+CREATE PROCEDURE country_percentage()
+BEGIN
+  SELECT 
+    country.country_name AS country,
+    COUNT(Shows.title) AS nr_of_titles,
+    ROUND((COUNT(Shows.title) * 100.0 / (SELECT COUNT(*) FROM Shows)), 2) AS percentage
+  FROM Shows
+  NATURAL JOIN streamingon
+  NATURAL JOIN country
+  GROUP BY country.country_name
+  ORDER BY country.country_name ASC;
 END//
 
 CREATE PROCEDURE titles_top10_by_genre(IN category_type VARCHAR(10))
@@ -270,7 +282,24 @@ BEGIN
 	WHERE ranking = 1
 	ORDER BY genre ASC;
 END//
-
+CREATE PROCEDURE top_actor_by_country()
+BEGIN
+	WITH RankedActors AS (
+	  SELECT 
+		Country.country_name AS country,
+		Person.person_name AS actor,
+		pa.appearances,
+		ROW_NUMBER() OVER (PARTITION BY pa.country_id ORDER BY pa.appearances DESC) AS ranking
+	  FROM person_appearances_per_country_per_role pa
+	  JOIN Person ON pa.person_id = Person.person_id
+	  JOIN Country ON Country.country_id = pa.country_id
+	  WHERE LOWER(pa.paper_role) = 'actor'
+	)
+	SELECT country , actor, appearances
+	FROM RankedActors
+	WHERE ranking = 1
+	ORDER BY country ASC;
+END//
 CREATE PROCEDURE top_actors()
 BEGIN
 	SELECT
@@ -344,3 +373,14 @@ FROM Paper
 NATURAL JOIN Shows
 NATURAL JOIN ListedIn
 GROUP BY ListedIn.genre_id, Paper.person_id, Paper.paper_role;
+
+CREATE OR REPLACE VIEW person_appearances_per_country_per_role AS
+SELECT 
+  StreamingOn.country_id,
+  Paper.person_id,
+  Paper.paper_role,
+  COUNT(*) AS appearances
+FROM Paper
+NATURAL JOIN Shows
+NATURAL JOIN StreamingOn
+GROUP BY StreamingOn.country_id, Paper.person_id, Paper.paper_role;
