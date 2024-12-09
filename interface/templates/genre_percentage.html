@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Genre Statistics</h1>
+<table class="styled-table">
+  <thead>
+    <tr>
+      <th>Genre</th>
+      <th>Number of films</th>
+      <th>Percentage</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in genres_n_percentages %}
+    <tr>
+      <td>{{ item.genre }}</td>
+      <td>{{ item.nr }}</td>
+      <td>{{ item.percentage }}%</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

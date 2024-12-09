@@ -16,12 +16,15 @@ DROP PROCEDURE IF EXISTS titles_by_genre;
 DROP PROCEDURE IF EXISTS titles_by_rating;
 DROP PROCEDURE IF EXISTS show_within_restrictions;
 DROP PROCEDURE IF EXISTS top_actors;
+DROP PROCEDURE IF EXISTS top_actor_by_genre;
+DROP PROCEDURE IF EXISTS genre_percentage;
+DROP PROCEDURE IF EXISTS titles_by_letters;
+
 -- not yet implemented
 DROP PROCEDURE IF EXISTS titles_yearly_count;
 DROP PROCEDURE IF EXISTS titles_top10_by_genre;
-DROP PROCEDURE IF EXISTS top_actor_by_genre;
 DROP PROCEDURE IF EXISTS show_within_decade;
-DROP PROCEDURE IF EXISTS genre_percentage;
+
 
 DELIMITER //
 
@@ -229,13 +232,13 @@ CREATE PROCEDURE genre_percentage()
 BEGIN
   SELECT 
     genre.genre_name AS genre,
-    COUNT(Shows.title) AS number_of_movies,
+    COUNT(Shows.title) AS nr_of_titles,
     ROUND((COUNT(Shows.title) * 100.0 / (SELECT COUNT(*) FROM Shows)), 2) AS percentage
   FROM Shows
   NATURAL JOIN listedin
   NATURAL JOIN genre
   GROUP BY genre.genre_name
-  ORDER BY percentage DESC;
+  ORDER BY genre.genre_name ASC;
 END//
 
 CREATE PROCEDURE titles_top10_by_genre(IN category_type VARCHAR(10))
@@ -279,6 +282,22 @@ BEGIN
 	WHERE Paper.paper_role = "actor"
 	GROUP BY Person.person_id
 	ORDER BY actor_appearances.appearances DESC, Person.person_name ASC;
+END//
+
+CREATE PROCEDURE titles_by_letters(IN in_letters VARCHAR(30))
+BEGIN
+  SELECT DISTINCT
+    Shows.title AS title,
+    Rating.rating_type AS rating,
+    Duration.duration_time AS duration,
+    DurationUnit.unit_name AS unit,
+    Shows.show_description AS description
+  FROM Shows
+  NATURAL JOIN Duration
+  NATURAL JOIN DurationUnit
+  NATURAL JOIN Category
+  NATURAL JOIN Rating
+  WHERE LOWER(Shows.title) LIKE CONCAT(LOWER(in_letters), '%');
 END//
 
 -- Views

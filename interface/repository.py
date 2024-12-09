@@ -522,6 +522,37 @@ def call_top_actor_by_genre() -> list[dict]:
         }
         for row in result.mappings()
     ]
+def call_genre_percentage() -> list[dict]:
+    result: Table = db.session.execute(
+        text("""CALL genre_percentage()""")
+    )
+    return [
+        {
+            "genre":       row["genre"],
+            "nr":       row["nr_of_titles"],
+            "percentage": row["percentage"]
+        }
+        for row in result.mappings()
+    ]
+def call_titles_by_letters(letters : str) -> list[dict]:
+    result: Table = db.session.execute(
+        text(
+            """
+            CALL titles_by_letters(:in_letters)"""),
+        {
+            "in_letters": letters
+
+        }
+    )
+    return [
+        {
+            "title":       row["title"],
+            "rating":      row["rating"],
+            "duration": f"{row['duration']} {row['unit']}",
+            "description": row["description"],
+        }
+        for row in result.mappings()
+    ]
 
 def call_top_actors() -> list[dict]:
     result: Table = db.session.execute(
@@ -534,7 +565,6 @@ def call_top_actors() -> list[dict]:
         }
         for row in result.mappings()
     ]
-
 def call_titles_top10_genre(category_type: str) -> list[str]:
     result: Table = db.session.execute(
         text(

@@ -4,10 +4,20 @@
 <a href="/" class="btn">
   <button type="button">Go Back</button>
 </a>
-
+<div class="search-container">
+  <form action="/search_titles" method="get">
+    <input 
+        type="text" 
+        name="query" 
+        placeholder="Search titles..." 
+        class="form-input" 
+    />
+    <a class="btn"><button type="submit">Search</button></a>
+  </form>
+</div>
 <div class="filter-section">
   <form action="/titles" method="get" class="filter-form">
-    <input type="hidden" name="val" value="filter" />
+    <input type="hidden" name="val" value="filter_time" />
     
     <td for="category" class="form-label">Choose category:</td>
     <select name="category" id="category" class="form-select">
@@ -17,6 +27,7 @@
     </select>
     <select name="rating" id="rating" class="form-select">
       {% if ratings %}
+        <option value="All">No Filter</option>
         {% for rating in ratings %}
           <option value="{{rating}}">{{rating}}</option>
         {% endfor %}

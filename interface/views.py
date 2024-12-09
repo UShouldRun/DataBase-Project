@@ -69,6 +69,18 @@ def top_actors_by_genre():
     except Exception as e:
         print(f"Error fetching top actors by genre: {e}")
         return "An error occurred.", 500
+    
+@app.route("/genre_statistics", methods=["GET"])
+def genre_statistics():
+    try:
+        genres_n_percentages = call_genre_percentage()
+        return render_template(
+            "genre_percentage.html",
+            genres_n_percentages=genres_n_percentages
+        )
+    except Exception as e:
+        print(f"Error fetching top actors by genre: {e}")
+        return "An error occurred.", 500
 
 
 @app.route("/countries", methods=["GET"])
@@ -92,7 +104,7 @@ def show_titles():
         country = request.args.get("country") 
         if country:
             titles = call_titles_by_country(country)
-    elif val == "filter":
+    elif val == "filter_time":
         category_type = request.args.get("category")
         min_time = request.args.get("min_time")
         max_time = request.args.get("max_time")
@@ -106,7 +118,7 @@ def show_titles():
         else:
             titles = call_show_within_restrictions(category_type, min_time, max_time)
 
-        if rating:
+        if rating and rating!="All":
             if rating == "Not":  # Handle "Not Rated" (i give up)
                 titles = [title for title in titles if title["rating"] == "Not Rated"]
             else:
@@ -114,6 +126,15 @@ def show_titles():
     else:
         titles = call_titles_all()
         
+    return render_template(
+        "titles.html",
+        titles = titles,
+        ratings= call_ratings_all()
+    )
+@app.route("/search_titles", methods=["GET"])
+def search_titles():
+    query : str = request.args.get("query") 
+    titles=call_titles_by_letters(query)
     return render_template(
         "titles.html",
         titles = titles,
