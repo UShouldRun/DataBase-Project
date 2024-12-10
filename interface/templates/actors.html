@@ -2,6 +2,7 @@
 
 {% block content %}
 <h1>Actors</h1>
+<h3>Click on the actor name to see all the titles that he was on</h3>
 <form action="/actors" method="get">
   <a class="btn"><button type="submit" name="filter" value="true">Order by film appearances</button></a>
 </form>
@@ -15,7 +16,7 @@
   
   {% for actor in actors %}
   <tr>
-    <td><a>{{ actor['name'] }}</a></td>
+    <td><a href="/titles_by_actor?actor={{ actor['name'] | urlencode }}" class="no-style-link">{{ actor['name'] }}</a></td>
     {% if actor.get("appearances") is not none %}
     <td>{{ actor['appearances'] }}</td>
     {% endif %}

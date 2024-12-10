@@ -460,6 +460,38 @@ def call_titles_by_country(country: str) -> list[dict]:
         }
         for row in result.mappings()
     ]
+def call_titles_by_actor(actor: str) -> list[dict]:
+    result: Table = db.session.execute(
+        text("CALL titles_by_actor(:in_actor)"),
+        {
+            "in_actor": actor
+        }
+    )
+    return [
+        {
+            "title":       row["title"],
+            "duration": f"{row['duration']} {row['unit']}",
+            "rating":      row["rating"],
+            "description": row["description"],
+        }
+        for row in result.mappings()
+    ]
+def call_titles_by_director(director: str) -> list[dict]:
+    result: Table = db.session.execute(
+        text("CALL titles_by_director(:in_director)"),
+        {
+            "in_director": director
+        }
+    )
+    return [
+        {
+            "title":       row["title"],
+            "duration": f"{row['duration']} {row['unit']}",
+            "rating":      row["rating"],
+            "description": row["description"],
+        }
+        for row in result.mappings()
+    ]
 def call_top_actor_by_country() -> list[dict]:
     result: Table = db.session.execute(
         text("""CALL top_actor_by_country()""")

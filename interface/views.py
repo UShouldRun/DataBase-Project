@@ -158,3 +158,21 @@ def titles_over_time():
         "year_statistics.html",
         data = data,
     )
+@app.route("/titles_by_actor", methods=["GET"])
+def titles_by_actor():
+    actor : str = request.args.get("actor") 
+    titles=call_titles_by_actor(actor)
+    return render_template(
+        "titles.html",
+        titles = titles,
+        ratings= call_ratings_all()
+    )
+@app.route("/titles_by_director", methods=["GET"])
+def titles_by_director():
+    director : str = request.args.get("director") 
+    titles=call_titles_by_director(director)
+    return render_template(
+        "titles.html",
+        titles = titles,
+        ratings= call_ratings_all()
+    )

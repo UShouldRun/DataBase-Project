@@ -2,6 +2,7 @@
 
 {% block content %}
 <h1>Directors</h1>
+<h3>Click on the director name to see all the titles that he was on</h3>
 <table class="styled-table">
   <tr>
     <th><b>Name</b></th>
@@ -9,7 +10,7 @@
   
   {% for director in directors %}
   <tr>
-    <td><a>{{ director }}</a></td>
+    <td><a href="/titles_by_director?director={{ director | urlencode }}" class="no-style-link">{{ director }}</a></td>
   </tr>
   {% endfor %}
   

@@ -112,23 +112,37 @@ END//
 
 CREATE PROCEDURE titles_by_director(IN director VARCHAR(100))
 BEGIN
-  SELECT Shows.title
+  SELECT DISTINCT
+	Shows.title,
+    Rating.rating_type AS rating,
+    Duration.duration_time AS duration,
+    DurationUnit.unit_name AS unit,
+    Shows.show_description AS description
   FROM Shows 
   NATURAL JOIN Paper
   NATURAL JOIN Person
+  NATURAL JOIN Rating
+  NATURAL JOIN Duration
+  NATURAL JOIN DurationUnit
   WHERE LOWER(Paper.paper_role) = 'director' AND LOWER(Person.person_name) = LOWER(director)
-  GROUP BY Shows.title
   ORDER BY Shows.title;
 END//
 
 CREATE PROCEDURE titles_by_actor(IN actor VARCHAR(100))
 BEGIN
-  SELECT Shows.title
+  SELECT DISTINCT 
+    Shows.title,
+    Rating.rating_type AS rating,
+    Duration.duration_time AS duration,
+    DurationUnit.unit_name AS unit,
+    Shows.show_description AS description
   FROM Shows
   NATURAL JOIN Paper
   NATURAL JOIN Person
+  NATURAL JOIN Rating
+  NATURAL JOIN Duration
+  NATURAL JOIN DurationUnit
   WHERE LOWER(Paper.paper_role) = 'actor' AND LOWER(Person.person_name) = LOWER(actor)
-  GROUP BY Shows.title
   ORDER BY Shows.title;
 END//
 
